@@ -2,8 +2,8 @@ version: '3.8'
 
 services:
   # MySQL 8.0 Database
-  db:
-    image: mysql:8.0
+  redmine_mysql:
+    image: mysql:8.0.42
     container_name: redmine_mysql
     restart: unless-stopped    
     environment:
@@ -32,9 +32,9 @@ services:
     environment:
       - DEBUG=1
       - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
-      - DATABASE_URL=mysql://redmine:redmine_password@db:3306/redmine
+      - DATABASE_URL=mysql://root:aqwsde123!@redmine_mysql:3306/redmine
     depends_on:
-      - db
+      - redmine_mysql
     networks:
       - redmine_network
     command: >
