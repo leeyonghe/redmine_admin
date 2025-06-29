@@ -25,17 +25,17 @@
         <div class="flex items-center justify-between">
             <h3 class="text-lg font-medium text-gray-900">연도 선택</h3>
             <div class="flex items-center space-x-4">
-                <button class="p-2 text-gray-500 hover:text-gray-700">
+                <a href="{% url 'redmine:yearly_report_with_year' prev_year %}" class="p-2 text-gray-500 hover:text-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
-                </button>
-                <span class="text-sm font-medium text-gray-900">2025년</span>
-                <button class="p-2 text-gray-500 hover:text-gray-700">
+                </a>
+                <span class="text-sm font-medium text-gray-900">{{ year }}년</span>
+                <a href="{% url 'redmine:yearly_report_with_year' next_year %}" class="p-2 text-gray-500 hover:text-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -50,8 +50,8 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">총 프로젝트</p>
-                    <p class="text-2xl font-bold text-gray-900">48</p>
+                    <p class="text-sm font-medium text-gray-600">총 이슈</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_yearly_issues }}</p>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">완료된 작업</p>
-                    <p class="text-2xl font-bold text-gray-900">1,847</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ completed_yearly_issues }}</p>
                 </div>
             </div>
         </div>
@@ -78,8 +78,8 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">총 매출</p>
-                    <p class="text-2xl font-bold text-gray-900">₩2.4B</p>
+                    <p class="text-sm font-medium text-gray-600">총 작업 시간</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_yearly_hours|floatformat:1 }}h</p>
                 </div>
             </div>
         </div>
@@ -92,8 +92,8 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">평균 성과</p>
-                    <p class="text-2xl font-bold text-gray-900">89%</p>
+                    <p class="text-sm font-medium text-gray-600">성장률</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ issue_growth|floatformat:1 }}%</p>
                 </div>
             </div>
         </div>
@@ -103,74 +103,65 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">월별 프로젝트 완료 현황</h3>
+                <h3 class="text-lg font-medium text-gray-900">월별 이슈 현황</h3>
             </div>
             <div class="p-6">
                 <div class="space-y-4">
+                    {% for trend in monthly_trends %}
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-900">1월</span>
+                        <span class="text-sm font-medium text-gray-900">{{ trend.month }}월</span>
                         <div class="flex items-center space-x-4">
                             <div class="w-32 bg-gray-200 rounded-full h-3">
-                                <div class="bg-blue-600 h-3 rounded-full" style="width: 85%"></div>
+                                {% if trend.percentage > 0 %}
+                                    <div class="bg-blue-600 h-3 rounded-full" style="width: {{ trend.percentage }}%"></div>
+                                {% else %}
+                                    <div class="bg-gray-300 h-3 rounded-full" style="width: 0%"></div>
+                                {% endif %}
                             </div>
-                            <span class="text-sm text-gray-900">17개</span>
+                            <span class="text-sm text-gray-900">{{ trend.issues }}개</span>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-900">2월</span>
-                        <div class="flex items-center space-x-4">
-                            <div class="w-32 bg-gray-200 rounded-full h-3">
-                                <div class="bg-green-600 h-3 rounded-full" style="width: 92%"></div>
-                            </div>
-                            <span class="text-sm text-gray-900">19개</span>
-                        </div>
+                    {% empty %}
+                    <div class="text-center text-gray-500 py-4">
+                        이번 연도에 생성된 이슈가 없습니다.
                     </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-900">3월</span>
-                        <div class="flex items-center space-x-4">
-                            <div class="w-32 bg-gray-200 rounded-full h-3">
-                                <div class="bg-yellow-500 h-3 rounded-full" style="width: 78%"></div>
-                            </div>
-                            <span class="text-sm text-gray-900">16개</span>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
 
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">부서별 성과</h3>
+                <h3 class="text-lg font-medium text-gray-900">프로젝트별 성과</h3>
             </div>
             <div class="p-6">
                 <div class="space-y-4">
+                    {% for project in department_performance %}
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-900">개발팀</span>
+                        <span class="text-sm font-medium text-gray-900">{{ project.name }}</span>
                         <div class="flex items-center space-x-4">
                             <div class="w-32 bg-gray-200 rounded-full h-3">
-                                <div class="bg-green-600 h-3 rounded-full" style="width: 94%"></div>
+                                {% if project.yearly_issues > 0 %}
+                                    {% widthratio project.completed_issues project.yearly_issues 100 as completion_rate %}
+                                    <div class="bg-green-600 h-3 rounded-full" style="width: {{ completion_rate }}%"></div>
+                                {% else %}
+                                    <div class="bg-gray-300 h-3 rounded-full" style="width: 0%"></div>
+                                {% endif %}
                             </div>
-                            <span class="text-sm text-gray-900">94%</span>
+                            <span class="text-sm text-gray-900">
+                                {% if project.yearly_issues > 0 %}
+                                    {% widthratio project.completed_issues project.yearly_issues 100 %}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </span>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-900">디자인팀</span>
-                        <div class="flex items-center space-x-4">
-                            <div class="w-32 bg-gray-200 rounded-full h-3">
-                                <div class="bg-blue-600 h-3 rounded-full" style="width: 87%"></div>
-                            </div>
-                            <span class="text-sm text-gray-900">87%</span>
-                        </div>
+                    {% empty %}
+                    <div class="text-center text-gray-500 py-4">
+                        이번 연도에 활동한 프로젝트가 없습니다.
                     </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-900">기획팀</span>
-                        <div class="flex items-center space-x-4">
-                            <div class="w-32 bg-gray-200 rounded-full h-3">
-                                <div class="bg-yellow-500 h-3 rounded-full" style="width: 82%"></div>
-                            </div>
-                            <span class="text-sm text-gray-900">82%</span>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -186,40 +177,31 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">지표</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">2025년</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">2024년</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ year }}년</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ prev_year }}년</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">증감률</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">목표 달성률</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">총 프로젝트</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">48</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">42</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">+14.3%</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">120%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">총 이슈</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ total_yearly_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ last_year_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm {% if issue_growth >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                            {% if issue_growth >= 0 %}+{% endif %}{{ issue_growth|floatformat:1 }}%
+                        </td>
                     </tr>
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">매출액</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₩2.4B</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₩2.1B</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">+14.3%</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">105%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">완료된 작업</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ completed_yearly_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
                     </tr>
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">고객 만족도</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">4.7/5.0</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">4.5/5.0</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">+4.4%</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">118%</td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">팀원 수</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">25명</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">22명</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">+13.6%</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">총 작업 시간</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ total_yearly_hours|floatformat:1 }}h</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
                     </tr>
                 </tbody>
             </table>

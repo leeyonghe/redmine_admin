@@ -25,17 +25,17 @@
         <div class="flex items-center justify-between">
             <h3 class="text-lg font-medium text-gray-900">월간 선택</h3>
             <div class="flex items-center space-x-4">
-                <button class="p-2 text-gray-500 hover:text-gray-700">
+                <a href="{% url 'redmine:monthly_report_with_month' prev_year prev_month %}" class="p-2 text-gray-500 hover:text-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
-                </button>
-                <span class="text-sm font-medium text-gray-900">2025년 1월</span>
-                <button class="p-2 text-gray-500 hover:text-gray-700">
+                </a>
+                <span class="text-sm font-medium text-gray-900">{{ year }}년 {{ month }}월</span>
+                <a href="{% url 'redmine:monthly_report_with_month' next_year next_month %}" class="p-2 text-gray-500 hover:text-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -50,8 +50,8 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">총 프로젝트</p>
-                    <p class="text-2xl font-bold text-gray-900">8</p>
+                    <p class="text-sm font-medium text-gray-600">총 이슈</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_monthly_issues }}</p>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">완료된 작업</p>
-                    <p class="text-2xl font-bold text-gray-900">156</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ completed_monthly_issues }}</p>
                 </div>
             </div>
         </div>
@@ -78,8 +78,8 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">총 예산</p>
-                    <p class="text-2xl font-bold text-gray-900">₩45M</p>
+                    <p class="text-sm font-medium text-gray-600">총 작업 시간</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_monthly_hours|floatformat:1 }}h</p>
                 </div>
             </div>
         </div>
@@ -92,8 +92,8 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">평균 성과</p>
-                    <p class="text-2xl font-bold text-gray-900">87%</p>
+                    <p class="text-sm font-medium text-gray-600">성장률</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ issue_growth|floatformat:1 }}%</p>
                 </div>
             </div>
         </div>
@@ -106,33 +106,32 @@
         </div>
         <div class="p-6">
             <div class="space-y-4">
+                {% for project in project_performance %}
                 <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-gray-900">웹사이트 리뉴얼</span>
+                    <span class="text-sm font-medium text-gray-900">{{ project.name }}</span>
                     <div class="flex items-center space-x-4">
                         <div class="w-32 bg-gray-200 rounded-full h-3">
-                            <div class="bg-green-600 h-3 rounded-full" style="width: 95%"></div>
+                            {% if project.monthly_issues > 0 %}
+                                {% widthratio project.completed_issues project.monthly_issues 100 as completion_rate %}
+                                <div class="bg-green-600 h-3 rounded-full" style="width: {{ completion_rate }}%"></div>
+                            {% else %}
+                                <div class="bg-gray-300 h-3 rounded-full" style="width: 0%"></div>
+                            {% endif %}
                         </div>
-                        <span class="text-sm text-gray-900">95%</span>
+                        <span class="text-sm text-gray-900">
+                            {% if project.monthly_issues > 0 %}
+                                {% widthratio project.completed_issues project.monthly_issues 100 %}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-gray-900">모바일 앱 개발</span>
-                    <div class="flex items-center space-x-4">
-                        <div class="w-32 bg-gray-200 rounded-full h-3">
-                            <div class="bg-blue-600 h-3 rounded-full" style="width: 78%"></div>
-                        </div>
-                        <span class="text-sm text-gray-900">78%</span>
-                    </div>
+                {% empty %}
+                <div class="text-center text-gray-500 py-4">
+                    이번 달에 활동한 프로젝트가 없습니다.
                 </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-gray-900">데이터베이스 마이그레이션</span>
-                    <div class="flex items-center space-x-4">
-                        <div class="w-32 bg-gray-200 rounded-full h-3">
-                            <div class="bg-yellow-500 h-3 rounded-full" style="width: 65%"></div>
-                        </div>
-                        <span class="text-sm text-gray-900">65%</span>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -154,22 +153,24 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">총 이슈</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ total_monthly_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ last_month_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm {% if issue_growth >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                            {% if issue_growth >= 0 %}+{% endif %}{{ issue_growth|floatformat:1 }}%
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">완료된 작업</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">156</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">142</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">+9.9%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ completed_monthly_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
                     </tr>
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">평균 완료 시간</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3.2일</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3.8일</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">-15.8%</td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">고객 만족도</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">4.6/5.0</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">4.4/5.0</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">+4.5%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">총 작업 시간</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ total_monthly_hours|floatformat:1 }}h</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
                     </tr>
                 </tbody>
             </table>

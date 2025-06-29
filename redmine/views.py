@@ -290,14 +290,34 @@ def weekly_report_view(request, year=None, week=None):
     return render(request, 'weekly_report.html', context)
 
 @login_required
-def monthly_report_view(request):
-    # 현재 달의 데이터
-    now = timezone.now()
-    start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    if now.month == 12:
-        end_of_month = now.replace(year=now.year + 1, month=1, day=1) - timedelta(days=1)
+def monthly_report_view(request, year=None, month=None):
+    # 월 파라미터가 없으면 현재 월 사용
+    if year is None or month is None:
+        now = timezone.now()
+        year = now.year
+        month = now.month
+    
+    # 해당 월의 시작일과 종료일 계산
+    start_of_month = datetime(year, month, 1)
+    if month == 12:
+        end_of_month = datetime(year + 1, 1, 1) - timedelta(days=1)
     else:
-        end_of_month = now.replace(month=now.month + 1, day=1) - timedelta(days=1)
+        end_of_month = datetime(year, month + 1, 1) - timedelta(days=1)
+    
+    # 이전 월과 다음 월 계산
+    if month == 1:
+        prev_month = 12
+        prev_year = year - 1
+    else:
+        prev_month = month - 1
+        prev_year = year
+    
+    if month == 12:
+        next_month = 1
+        next_year = year + 1
+    else:
+        next_month = month + 1
+        next_year = year
     
     # 월간 통계
     monthly_issues = Issue.objects.filter(
@@ -335,8 +355,14 @@ def monthly_report_view(request):
     ).count()
     
     context = {
+        'year': year,
+        'month': month,
         'month_start': start_of_month,
         'month_end': end_of_month,
+        'prev_year': prev_year,
+        'prev_month': prev_month,
+        'next_year': next_year,
+        'next_month': next_month,
         'total_monthly_issues': monthly_issues.count(),
         'completed_monthly_issues': monthly_issues.filter(status_id=5).count(),
         'total_monthly_hours': monthly_time_entries.aggregate(total=Sum('hours'))['total'] or 0,
@@ -348,11 +374,19 @@ def monthly_report_view(request):
     return render(request, 'monthly_report.html', context)
 
 @login_required
-def yearly_report_view(request):
-    # 현재 연도의 데이터
-    now = timezone.now()
-    start_of_year = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
-    end_of_year = now.replace(month=12, day=31, hour=23, minute=59, second=59, microsecond=999999)
+def yearly_report_view(request, year=None):
+    # 연도 파라미터가 없으면 현재 연도 사용
+    if year is None:
+        now = timezone.now()
+        year = now.year
+    
+    # 해당 연도의 시작일과 종료일 계산
+    start_of_year = datetime(year, 1, 1)
+    end_of_year = datetime(year, 12, 31, 23, 59, 59, 999999)
+    
+    # 이전 연도와 다음 연도 계산
+    prev_year = year - 1
+    next_year = year + 1
     
     # 연간 통계
     yearly_issues = Issue.objects.filter(
@@ -410,8 +444,11 @@ def yearly_report_view(request):
     ).count()
     
     context = {
+        'year': year,
         'year_start': start_of_year,
         'year_end': end_of_year,
+        'prev_year': prev_year,
+        'next_year': next_year,
         'total_yearly_issues': yearly_issues.count(),
         'completed_yearly_issues': yearly_issues.filter(status_id=5).count(),
         'total_yearly_hours': yearly_time_entries.aggregate(total=Sum('hours'))['total'] or 0,
