@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.db.models import Count, Sum, Avg
+from django.db.models import Count, Sum, Avg, Q
 from django.utils import timezone
 from datetime import datetime, timedelta
 from .models import Project, Issue, TimeEntry, IssueStatus, Tracker
@@ -10,11 +10,13 @@ from .models import Project, Issue, TimeEntry, IssueStatus, Tracker
 # Create your views here.
 
 def index(request):
+    print("index")
     # 실제 데이터 가져오기
     total_projects = Project.objects.count()
     total_issues = Issue.objects.count()
     completed_issues = Issue.objects.filter(status_id=5).count()  # 종료된 이슈
     active_users = TimeEntry.objects.values('user').distinct().count()
+    print("index")
     
     # 최근 활동
     recent_issues = Issue.objects.select_related('project').order_by('-created_on')[:5]
@@ -22,8 +24,10 @@ def index(request):
     # 프로젝트별 통계
     project_stats = Project.objects.annotate(
         issue_count=Count('issue'),
-        completed_count=Count('issue', filter=models.Q(issue__status_id=5))
+        completed_count=Count('issue', filter=Q(issue__status_id=5))
     ).order_by('-issue_count')[:5]
+
+    print("index")
     
     context = {
         'total_projects': total_projects,
@@ -33,6 +37,8 @@ def index(request):
         'recent_issues': recent_issues,
         'project_stats': project_stats,
     }
+
+    print("index")
     
     return render(request, 'dashboard.html', context)
 
@@ -70,7 +76,7 @@ def performance_view(request):
     project_performance = Project.objects.annotate(
         total_hours=Sum('timeentry__hours'),
         total_issues=Count('issue'),
-        completed_issues=Count('issue', filter=models.Q(issue__status_id=5))
+        completed_issues=Count('issue', filter=Q(issue__status_id=5))
     ).order_by('-total_hours')
     
     context = {
@@ -101,11 +107,11 @@ def weekly_report_view(request):
     
     # 프로젝트별 주간 작업
     project_weekly_work = Project.objects.annotate(
-        weekly_issues=Count('issue', filter=models.Q(
+        weekly_issues=Count('issue', filter=Q(
             issue__created_on__gte=start_of_week,
             issue__created_on__lte=end_of_week
         )),
-        weekly_hours=Sum('timeentry__hours', filter=models.Q(
+        weekly_hours=Sum('timeentry__hours', filter=Q(
             timeentry__spent_on__gte=start_of_week.date(),
             timeentry__spent_on__lte=end_of_week.date()
         ))
@@ -147,15 +153,15 @@ def monthly_report_view(request):
     
     # 프로젝트별 성과
     project_performance = Project.objects.annotate(
-        monthly_issues=Count('issue', filter=models.Q(
+        monthly_issues=Count('issue', filter=Q(
             issue__created_on__gte=start_of_month,
             issue__created_on__lte=end_of_month
         )),
-        monthly_hours=Sum('timeentry__hours', filter=models.Q(
+        monthly_hours=Sum('timeentry__hours', filter=Q(
             timeentry__spent_on__gte=start_of_month.date(),
             timeentry__spent_on__lte=end_of_month.date()
         )),
-        completed_issues=Count('issue', filter=models.Q(
+        completed_issues=Count('issue', filter=Q(
             issue__created_on__gte=start_of_month,
             issue__created_on__lte=end_of_month,
             issue__status_id=5
@@ -221,15 +227,15 @@ def yearly_report_view(request):
     
     # 부서별 성과 (프로젝트별)
     department_performance = Project.objects.annotate(
-        yearly_issues=Count('issue', filter=models.Q(
+        yearly_issues=Count('issue', filter=Q(
             issue__created_on__gte=start_of_year,
             issue__created_on__lte=end_of_year
         )),
-        yearly_hours=Sum('timeentry__hours', filter=models.Q(
+        yearly_hours=Sum('timeentry__hours', filter=Q(
             timeentry__spent_on__gte=start_of_year.date(),
             timeentry__spent_on__lte=end_of_year.date()
         )),
-        completed_issues=Count('issue', filter=models.Q(
+        completed_issues=Count('issue', filter=Q(
             issue__created_on__gte=start_of_year,
             issue__created_on__lte=end_of_year,
             issue__status_id=5

@@ -53,6 +53,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'redmine_admin.urls'
 
+print(BASE_DIR / 'templates')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -76,7 +78,7 @@ WSGI_APPLICATION = 'redmine_admin.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Docker 환경 변수에서 데이터베이스 설정 가져오기
-DATABASE_URL = os.environ.get('DATABASE_URL', 'mysql://redmine:redmine_password@db:3306/redmine')
+DATABASE_URL = os.environ.get('DATABASE_URL', 'mysql://root:aqwsde123!@redmine_mysql:3306')
 
 # DATABASE_URL 파싱
 if DATABASE_URL.startswith('mysql://'):
@@ -93,11 +95,18 @@ if DATABASE_URL.startswith('mysql://'):
     DB_NAME = host_db[1]
 else:
     # 기본값
-    DB_USER = 'redmine'
-    DB_PASSWORD = 'redmine_password'
-    DB_HOST = 'db'
+    DB_USER = 'root'
+    DB_PASSWORD = 'aqwsde123!'
+    DB_HOST = 'redmine_mysql'
     DB_PORT = '3306'
     DB_NAME = 'redmine'
+
+# print(DATABASE_URL)
+# print(DB_USER)
+# print(DB_PASSWORD)
+# print(DB_HOST)
+# print(DB_PORT)
+# print(DB_NAME)
 
 DATABASES = {
     'default': {

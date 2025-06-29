@@ -135,7 +135,7 @@
                         <div class="flex items-center space-x-4">
                             <div class="w-32 bg-gray-200 rounded-full h-3">
                                 {% if project.issue_count > 0 %}
-                                <div class="bg-green-600 h-3 rounded-full" style="width: {{ project.completed_count|div:project.issue_count|mul:100 }}%"></div>
+                                
                                 {% endif %}
                             </div>
                             <span class="text-sm text-gray-900">{{ project.completed_count }}/{{ project.issue_count }}</span>
@@ -151,5 +151,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
 {% endblock %} 
