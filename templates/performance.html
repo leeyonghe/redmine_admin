@@ -107,11 +107,11 @@
                             <div class="flex items-center">
                                 <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
                                     {% if user.total_hours > 0 %}
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: {% if user.total_hours > 100 %}100{% else %}{{ user.total_hours|div:100|mul:100|floatformat:0 }}{% endif %}%"></div>
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: {% if user.total_hours > 100 %}100{% else %}{{ user.total_hours|floatformat:0 }}{% endif %}%"></div>
                                     {% endif %}
                                 </div>
                                 <span class="text-sm text-gray-900">
-                                    {% if user.total_hours > 100 %}100{% else %}{{ user.total_hours|div:100|mul:100|floatformat:0 }}{% endif %}%
+                                    {% if user.total_hours > 100 %}100{% else %}{{ user.total_hours|floatformat:0 }}{% endif %}%
                                 </span>
                             </div>
                         </td>
@@ -158,11 +158,11 @@
                             <div class="flex items-center">
                                 <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
                                     {% if project.total_issues > 0 %}
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: {{ project.completed_issues|div:project.total_issues|mul:100 }}%"></div>
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: {% if project.completed_issues > project.total_issues %}100{% else %}{{ project.completed_issues|floatformat:0 }}{% endif %}%"></div>
                                     {% endif %}
                                 </div>
                                 <span class="text-sm text-gray-900">
-                                    {% if project.total_issues > 0 %}{{ project.completed_issues|div:project.total_issues|mul:100|floatformat:0 }}{% else %}0{% endif %}%
+                                    {% if project.total_issues > 0 %}{{ project.completed_issues|floatformat:0 }}{% else %}0{% endif %}%
                                 </span>
                             </div>
                         </td>
