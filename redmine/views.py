@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import hashlib
 from .models import Project, Issue, TimeEntry, IssueStatus, Tracker, RedmineUser, RedmineUserAvatar
 from django.contrib.auth.models import User
+from django.db import connection
 # Create your views here.
 
 @login_required
@@ -116,11 +117,19 @@ def performance_view(request):
                 user_data['user_firstname'] = redmine_user.firstname
                 user_data['user_lastname'] = redmine_user.lastname
                 
-                # 아바타 정보 추가
+                # 아바타 정보 추가 (테이블이 존재하지 않을 수 있으므로 안전하게 처리)
                 try:
-                    avatar = RedmineUserAvatar.objects.get(user=redmine_user)
-                    user_data['avatar_path'] = avatar.avatar_path
-                except RedmineUserAvatar.DoesNotExist:
+                    # 테이블 존재 여부 확인
+                    with connection.cursor() as cursor:
+                        cursor.execute("SHOW TABLES LIKE 'users_avatar'")
+                        table_exists = cursor.fetchone()
+                    
+                    if table_exists:
+                        avatar = RedmineUserAvatar.objects.get(user_id=redmine_user.id)
+                        user_data['avatar_path'] = avatar.avatar_path
+                    else:
+                        user_data['avatar_path'] = None
+                except Exception:
                     user_data['avatar_path'] = None
                     
             except RedmineUser.DoesNotExist:
@@ -467,4 +476,20 @@ def yearly_report_view(request, year=None):
         'issue_growth': ((yearly_issues.count() - last_year_issues) / last_year_issues * 100) if last_year_issues > 0 else 0,
     }
     
-    return render(request, 'yearly_report.html', context) 
+    return render(request, 'yearly_report.html', context)
+
+def get_user_avatar_path(user_id):
+    """사용자 ID로 아바타 경로를 가져오는 헬퍼 함수"""
+    try:
+        # 테이블 존재 여부 확인
+        with connection.cursor() as cursor:
+            cursor.execute("SHOW TABLES LIKE 'users_avatar'")
+            table_exists = cursor.fetchone()
+        
+        if table_exists:
+            avatar = RedmineUserAvatar.objects.get(user_id=user_id)
+            return avatar.avatar_path
+        else:
+            return None
+    except Exception:
+        return None 
