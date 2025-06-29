@@ -35,7 +35,7 @@ def index(request):
     total_projects = Project.objects.count()
     total_issues = Issue.objects.count()
     completed_issues = Issue.objects.filter(status_id=5).count()  # 종료된 이슈
-    active_users = TimeEntry.objects.values('user').distinct().count()
+    active_users = RedmineUser.objects.filter(status=1).count()
     print("index")
     
     # 최근 활동
