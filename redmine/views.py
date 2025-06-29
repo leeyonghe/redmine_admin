@@ -9,7 +9,7 @@ from django.db.models import Value
 from django.utils import timezone
 from datetime import datetime, timedelta
 import hashlib
-from .models import Project, Issue, TimeEntry, IssueStatus, Tracker, RedmineUser
+from .models import Project, Issue, TimeEntry, IssueStatus, Tracker, RedmineUser, RedmineUserAvatar
 from django.contrib.auth.models import User
 # Create your views here.
 
@@ -115,10 +115,19 @@ def performance_view(request):
                 user_data['user_login'] = redmine_user.login
                 user_data['user_firstname'] = redmine_user.firstname
                 user_data['user_lastname'] = redmine_user.lastname
+                
+                # 아바타 정보 추가
+                try:
+                    avatar = RedmineUserAvatar.objects.get(user=redmine_user)
+                    user_data['avatar_path'] = avatar.avatar_path
+                except RedmineUserAvatar.DoesNotExist:
+                    user_data['avatar_path'] = None
+                    
             except RedmineUser.DoesNotExist:
                 user_data['user_login'] = f"User_{user_data['assigned_to_id']}"
                 user_data['user_firstname'] = "Unknown"
                 user_data['user_lastname'] = "User"
+                user_data['avatar_path'] = None
         
         print("user_performance query completed")
         
