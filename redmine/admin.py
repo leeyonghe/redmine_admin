@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, Issue, TimeEntry, IssueStatus, Tracker
+from .models import Project, Issue, TimeEntry, IssueStatus, Tracker, RedmineUser
 
 # Register your models here.
 
@@ -32,6 +32,13 @@ class IssueStatusAdmin(admin.ModelAdmin):
 
 @admin.register(Tracker)
 class TrackerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_in_chlog', 'is_in_roadmap', 'position')
-    list_filter = ('is_in_chlog', 'is_in_roadmap')
-    ordering = ('position',) 
+    list_display = ('name', 'is_in_roadmap', 'position')
+    list_filter = ('is_in_roadmap',)
+    ordering = ('position',)
+
+@admin.register(RedmineUser)
+class RedmineUserAdmin(admin.ModelAdmin):
+    list_display = ('login', 'firstname', 'lastname', 'admin', 'status', 'last_login_on')
+    list_filter = ('admin', 'status', 'created_on')
+    search_fields = ('login', 'firstname', 'lastname')
+    ordering = ('-created_on',) 

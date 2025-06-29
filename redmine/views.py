@@ -63,30 +63,42 @@ def login_view(request):
     return render(request, 'login.html')
 
 def performance_view(request):
-    # 개인별 성과 데이터
-    user_performance = TimeEntry.objects.values(
-        'user__username', 'user__first_name', 'user__last_name'
-    ).annotate(
-        total_hours=Sum('hours'),
-        total_issues=Count('issue', distinct=True),
-        avg_hours_per_issue=Avg('hours')
-    ).order_by('-total_hours')
-    
-    # 부서별 통계 (프로젝트별로 그룹화)
-    project_performance = Project.objects.annotate(
-        total_hours=Sum('timeentry__hours'),
-        total_issues=Count('issue'),
-        completed_issues=Count('issue', filter=Q(issue__status_id=5))
-    ).order_by('-total_hours')
-    
-    context = {
-        'user_performance': user_performance,
-        'project_performance': project_performance,
-        'total_users': user_performance.count(),
-        'avg_performance': user_performance.aggregate(avg_hours=Avg('total_hours'))['avg_hours'] or 0,
-    }
-    
-    return render(request, 'performance.html', context)
+    try:
+        print("performance_view start")
+        # 개인별 성과 데이터
+        user_performance = TimeEntry.objects.values(
+            'user__login', 'user__firstname', 'user__lastname'
+        ).annotate(
+            total_hours=Sum('hours'),
+            total_issues=Count('issue', distinct=True),
+            avg_hours_per_issue=Avg('hours')
+        ).order_by('-total_hours')
+        print("user_performance query completed")
+        
+        # 부서별 통계 (프로젝트별로 그룹화)
+        project_performance = Project.objects.annotate(
+            total_hours=Sum('timeentry__hours'),
+            total_issues=Count('issue'),
+            completed_issues=Count('issue', filter=Q(issue__status_id=5))
+        ).order_by('-total_hours')
+        print("project_performance query completed")
+        
+        # 전체 평균 시간 계산
+        total_avg_hours = TimeEntry.objects.aggregate(avg_hours=Avg('hours'))['avg_hours'] or 0
+        print("total_avg_hours calculated")
+        
+        context = {
+            'user_performance': user_performance,
+            'project_performance': project_performance,
+            'total_users': user_performance.count(),
+            'avg_performance': total_avg_hours,
+        }
+        print("context created")
+        
+        return render(request, 'performance.html', context)
+    except Exception as e:
+        print(f"Error in performance_view: {str(e)}")
+        return HttpResponse(f"Error: {str(e)}")
 
 def weekly_report_view(request):
     # 현재 주의 데이터

@@ -90,13 +90,13 @@
                                 <img class="h-10 w-10 rounded-full" src="https://via.placeholder.com/40" alt="">
                                 <div class="ml-4">
                                     <div class="text-sm font-medium text-gray-900">
-                                        {% if user.user__first_name or user.user__last_name %}
-                                            {{ user.user__first_name }} {{ user.user__last_name }}
+                                        {% if user.user__firstname or user.user__lastname %}
+                                            {{ user.user__firstname }} {{ user.user__lastname }}
                                         {% else %}
-                                            {{ user.user__username }}
+                                            {{ user.user__login }}
                                         {% endif %}
                                     </div>
-                                    <div class="text-sm text-gray-500">{{ user.user__username }}</div>
+                                    <div class="text-sm text-gray-500">{{ user.user__login }}</div>
                                 </div>
                             </div>
                         </td>
