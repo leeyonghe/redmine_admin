@@ -4,7 +4,7 @@ from . import views
 app_name = 'redmine'
 
 urlpatterns = [
-    path('', views.index, name='dashboard'),
+    path('', views.index, name='index'),
     path('login/', views.login_view, name='login'),
     path('performance/', views.performance_view, name='performance'),
     path('weekly-report/', views.weekly_report_view, name='weekly_report'),
