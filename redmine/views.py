@@ -63,18 +63,14 @@ def login_view(request):
             hashed_password = hashlib.sha1(password.encode('utf-8')).hexdigest()
             
             if user.hashed_password == hashed_password:
-                # Django의 User 모델에 해당 사용자가 없으면 생성
+                # Django의 User 모델에서 해당 사용자 조회 (생성하지 않음)
                 from django.contrib.auth.models import User
-                django_user, created = User.objects.get_or_create(
-                    username=user.login,
-                    defaults={
-                        'first_name': user.firstname,
-                        'last_name': user.lastname,
-                        'email': f"{user.login}@example.com",  # 임시 이메일
-                        'is_staff': user.admin,
-                        'is_superuser': user.admin,
-                    }
-                )
+                try:
+                    django_user = User.objects.get(username=user.login)
+                except User.DoesNotExist:
+                    return render(request, 'login.html', {
+                        'error_message': '등록되지 않은 사용자입니다. 관리자에게 문의하세요.'
+                    })
                 
                 # Django 세션에 로그인
                 login(request, django_user)
