@@ -221,6 +221,36 @@ def weekly_report_view(request, year=None, week=None):
         else:
             issue.assigned_name = "미지정"
     
+    # 멤버별 이슈 상태 통계 계산
+    member_stats = {}
+    for issue in weekly_issues:
+        member_name = issue.assigned_name
+        if member_name not in member_stats:
+            member_stats[member_name] = {
+                'total': 0,
+                'new': 0,
+                'in_progress': 0,
+                'resolved': 0,
+                'feedback': 0,
+                'closed': 0,
+                'rejected': 0
+            }
+        
+        member_stats[member_name]['total'] += 1
+        
+        if issue.status_id == 1:
+            member_stats[member_name]['new'] += 1
+        elif issue.status_id == 2:
+            member_stats[member_name]['in_progress'] += 1
+        elif issue.status_id == 3:
+            member_stats[member_name]['resolved'] += 1
+        elif issue.status_id == 4:
+            member_stats[member_name]['feedback'] += 1
+        elif issue.status_id == 5:
+            member_stats[member_name]['closed'] += 1
+        elif issue.status_id == 6:
+            member_stats[member_name]['rejected'] += 1
+    
     weekly_time_entries = TimeEntry.objects.filter(
         spent_on__gte=week_start.date(),
         spent_on__lte=week_end.date()
@@ -254,6 +284,7 @@ def weekly_report_view(request, year=None, week=None):
         'total_weekly_hours': weekly_time_entries.aggregate(total=Sum('hours'))['total'] or 0,
         'project_weekly_work': project_weekly_work,
         'weekly_issues': weekly_issues,
+        'member_stats': member_stats,
     }
     
     return render(request, 'weekly_report.html', context)
