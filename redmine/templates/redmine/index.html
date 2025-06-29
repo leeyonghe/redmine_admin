@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Redmine Admin - 홈{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Redmine Admin Dashboard</h1>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">프로젝트 관리</h5>
+                        <p class="card-text">Redmine 프로젝트를 관리하고 모니터링합니다.</p>
+                        <a href="#" class="btn btn-primary">프로젝트 보기</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">이슈 관리</h5>
+                        <p class="card-text">프로젝트 이슈와 버그를 추적합니다.</p>
+                        <a href="#" class="btn btn-success">이슈 보기</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">사용자 관리</h5>
+                        <p class="card-text">사용자 계정과 권한을 관리합니다.</p>
+                        <a href="#" class="btn btn-info">사용자 보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>시스템 상태</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3 class="text-primary">5</h3>
+                                    <p>활성 프로젝트</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3 class="text-warning">12</h3>
+                                    <p>진행 중 이슈</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3 class="text-success">8</h3>
+                                    <p>완료된 이슈</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3 class="text-info">25</h3>
+                                    <p>등록된 사용자</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
