@@ -5,4 +5,9 @@ app_name = 'redmine'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('login/', views.login_view, name='login'),
+    path('performance/', views.performance_view, name='performance'),
+    path('weekly-report/', views.weekly_report_view, name='weekly_report'),
+    path('monthly-report/', views.monthly_report_view, name='monthly_report'),
+    path('yearly-report/', views.yearly_report_view, name='yearly_report'),
 ] 

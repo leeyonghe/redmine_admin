@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}대시보드 - Redmine Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">대시보드</h1>
+            <p class="mt-2 text-gray-600">프로젝트 현황과 성과를 한눈에 확인하세요</p>
+        </div>
+        <div class="flex space-x-3">
+            <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
+                새 프로젝트
+            </button>
+            <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                보고서 생성
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-blue-100 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">활성 프로젝트</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_projects }}</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-sm text-green-600">+2.5%</span>
+                <span class="text-sm text-gray-500">지난 달 대비</span>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-green-100 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">완료된 작업</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ completed_issues }}</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-sm text-green-600">+12.3%</span>
+                <span class="text-sm text-gray-500">지난 주 대비</span>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-yellow-100 rounded-lg">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">총 이슈</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_issues }}</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-sm text-red-600">-5.2%</span>
+                <span class="text-sm text-gray-500">지난 주 대비</span>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-purple-100 rounded-lg">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">활성 사용자</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ active_users }}</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-sm text-green-600">+8.1%</span>
+                <span class="text-sm text-gray-500">지난 달 대비</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Tables -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">최근 활동</h3>
+            </div>
+            <div class="p-6">
+                <div class="space-y-4">
+                    {% for issue in recent_issues %}
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900">{{ issue.subject }}</p>
+                            <p class="text-sm text-gray-600">{{ issue.project.name }}</p>
+                            <p class="text-xs text-gray-500">{{ issue.created_on|date:"M d, H:i" }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-gray-500 py-4">
+                        <p>최근 활동이 없습니다.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Stats -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">프로젝트별 현황</h3>
+            </div>
+            <div class="p-6">
+                <div class="space-y-4">
+                    {% for project in project_stats %}
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-900">{{ project.name }}</span>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-32 bg-gray-200 rounded-full h-3">
+                                {% if project.issue_count > 0 %}
+                                <div class="bg-green-600 h-3 rounded-full" style="width: {{ project.completed_count|div:project.issue_count|mul:100 }}%"></div>
+                                {% endif %}
+                            </div>
+                            <span class="text-sm text-gray-900">{{ project.completed_count }}/{{ project.issue_count }}</span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-gray-500 py-4">
+                        <p>프로젝트 데이터가 없습니다.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
+{% endblock %} 

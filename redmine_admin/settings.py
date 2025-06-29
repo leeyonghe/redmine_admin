@@ -75,14 +75,38 @@ WSGI_APPLICATION = 'redmine_admin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# Docker 환경 변수에서 데이터베이스 설정 가져오기
+DATABASE_URL = os.environ.get('DATABASE_URL', 'mysql://redmine:redmine_password@db:3306/redmine')
+
+# DATABASE_URL 파싱
+if DATABASE_URL.startswith('mysql://'):
+    # mysql://user:password@host:port/database
+    db_parts = DATABASE_URL.replace('mysql://', '').split('@')
+    user_pass = db_parts[0].split(':')
+    host_db = db_parts[1].split('/')
+    host_port = host_db[0].split(':')
+    
+    DB_USER = user_pass[0]
+    DB_PASSWORD = user_pass[1]
+    DB_HOST = host_port[0]
+    DB_PORT = host_port[1] if len(host_port) > 1 else '3306'
+    DB_NAME = host_db[1]
+else:
+    # 기본값
+    DB_USER = 'redmine'
+    DB_PASSWORD = 'redmine_password'
+    DB_HOST = 'db'
+    DB_PORT = '3306'
+    DB_NAME = 'redmine'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME', 'redmine'),
-        'USER': os.environ.get('DB_USER', 'redmine'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'redmine_password'),
-        'HOST': os.environ.get('DB_HOST', 'db'),
-        'PORT': os.environ.get('DB_PORT', '3306'),
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
         'OPTIONS': {
             'charset': 'utf8mb4',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
