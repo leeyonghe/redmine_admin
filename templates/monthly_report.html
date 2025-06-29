@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}월간보고 - Redmine Admin{% endblock %}
+{% block title %}{% trans "월간보고 - Redmine Admin" %}{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
     <!-- Page Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">월간보고</h1>
-            <p class="mt-2 text-gray-600">이번 달 프로젝트 성과를 종합적으로 확인하세요</p>
+            <h1 class="text-3xl font-bold text-gray-900">{% trans "월간보고" %}</h1>
+            <p class="mt-2 text-gray-600">{% trans "이번 달 프로젝트 성과를 종합적으로 확인하세요" %}</p>
         </div>
         <!-- <div class="flex space-x-3">
             <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
@@ -23,14 +24,14 @@
     <!-- Month Selector -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div class="flex items-center justify-between">
-            <h3 class="text-lg font-medium text-gray-900">월간 선택</h3>
+            <h3 class="text-lg font-medium text-gray-900">{% trans "월간 선택" %}</h3>
             <div class="flex items-center space-x-4">
                 <a href="{% url 'redmine:monthly_report_with_month' prev_year prev_month %}" class="p-2 text-gray-500 hover:text-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
                 </a>
-                <span class="text-sm font-medium text-gray-900">{{ year }}년 {{ month }}월</span>
+                <span class="text-sm font-medium text-gray-900">{{ year }}{% trans "년" %} {{ month }}{% trans "월" %}</span>
                 <a href="{% url 'redmine:monthly_report_with_month' next_year next_month %}" class="p-2 text-gray-500 hover:text-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -50,7 +51,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">총 이슈</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "총 이슈" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ total_monthly_issues }}</p>
                 </div>
             </div>
@@ -64,7 +65,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">완료된 작업</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "완료된 작업" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ completed_monthly_issues }}</p>
                 </div>
             </div>
@@ -78,7 +79,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">총 작업 시간</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "총 작업 시간" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ total_monthly_hours|floatformat:1 }}h</p>
                 </div>
             </div>
@@ -92,7 +93,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">성장률</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "성장률" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ issue_growth|floatformat:1 }}%</p>
                 </div>
             </div>
@@ -102,7 +103,7 @@
     <!-- Project Performance Chart -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">프로젝트별 성과</h3>
+            <h3 class="text-lg font-medium text-gray-900">{% trans "프로젝트별 성과" %}</h3>
         </div>
         <div class="p-6">
             <div class="space-y-4">
@@ -129,7 +130,7 @@
                 </div>
                 {% empty %}
                 <div class="text-center text-gray-500 py-4">
-                    이번 달에 활동한 프로젝트가 없습니다.
+                    {% trans "이번 달에 활동한 프로젝트가 없습니다." %}
                 </div>
                 {% endfor %}
             </div>
@@ -139,21 +140,21 @@
     <!-- Monthly Summary Table -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">월간 요약</h3>
+            <h3 class="text-lg font-medium text-gray-900">{% trans "월간 요약" %}</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">지표</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">이번 달</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">지난 달</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">변화율</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "지표" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "이번 달" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "지난 달" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "변화율" %}</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">총 이슈</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{% trans "총 이슈" %}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ total_monthly_issues }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ last_month_issues }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm {% if issue_growth >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
@@ -161,13 +162,13 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">완료된 작업</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{% trans "완료된 작업" %}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ completed_monthly_issues }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
                     </tr>
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">총 작업 시간</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{% trans "총 작업 시간" %}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ total_monthly_hours|floatformat:1 }}h</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>

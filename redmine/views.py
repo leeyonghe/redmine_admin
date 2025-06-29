@@ -12,7 +12,21 @@ import hashlib
 from .models import Project, Issue, TimeEntry, IssueStatus, Tracker, RedmineUser, RedmineUserAvatar
 from django.contrib.auth.models import User
 from django.db import connection
+from django.utils.translation import activate, get_language
+from django.http import JsonResponse
+from django.conf import settings
 # Create your views here.
+
+def set_language(request):
+    """언어 변경 뷰"""
+    if request.method == 'POST':
+        language = request.POST.get('language')
+        if language in [lang[0] for lang in settings.LANGUAGES]:
+            activate(language)
+            response = JsonResponse({'status': 'success'})
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
+            return response
+    return JsonResponse({'status': 'error'})
 
 @login_required
 def index(request):

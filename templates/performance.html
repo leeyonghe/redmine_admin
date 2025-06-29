@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}개인별성과관리 - Redmine Admin{% endblock %}
+{% block title %}{% trans "개인별성과관리 - Redmine Admin" %}{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
     <!-- Page Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">개인별성과관리</h1>
-            <p class="mt-2 text-gray-600">팀원들의 이슈 처리 성과를 추적하고 관리하세요</p>
+            <h1 class="text-3xl font-bold text-gray-900">{% trans "개인별성과관리" %}</h1>
+            <p class="mt-2 text-gray-600">{% trans "팀원들의 이슈 처리 성과를 추적하고 관리하세요" %}</p>
         </div>
         <!-- <div class="flex space-x-3">
             <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
@@ -31,7 +32,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">총 팀원</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "총 팀원" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ total_users }}</p>
                 </div>
             </div>
@@ -45,7 +46,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">총 이슈</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "총 이슈" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ total_issues }}</p>
                 </div>
             </div>
@@ -59,7 +60,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">완료된 이슈</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "완료된 이슈" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ completed_issues }}</p>
                 </div>
             </div>
@@ -73,7 +74,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">진행중</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "진행중" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ in_progress_issues }}</p>
                 </div>
             </div>
@@ -87,7 +88,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">지연된 이슈</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "지연된 이슈" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ delayed_issues }}</p>
                 </div>
             </div>
@@ -97,20 +98,20 @@
     <!-- Performance Table -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">팀원별 이슈 처리 현황</h3>
+            <h3 class="text-lg font-medium text-gray-900">{% trans "팀원별 이슈 처리 현황" %}</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">팀원</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">총 이슈</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">진행중</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">신규</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">지연</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료율</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">액션</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "팀원" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "총 이슈" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "완료" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "진행중" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "신규" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "지연" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "완료율" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "액션" %}</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -149,13 +150,13 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-primary hover:text-blue-700">상세보기</a>
+                            <a href="#" class="text-primary hover:text-blue-700">{% trans "상세보기" %}</a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
                         <td colspan="8" class="px-6 py-4 text-center text-gray-500">
-                            성과 데이터가 없습니다.
+                            {% trans "성과 데이터가 없습니다." %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -167,19 +168,19 @@
     <!-- Project Performance -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">프로젝트별 이슈 현황</h3>
+            <h3 class="text-lg font-medium text-gray-900">{% trans "프로젝트별 이슈 현황" %}</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">프로젝트</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">총 이슈</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">진행중</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">신규</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">지연</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료율</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "프로젝트" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "총 이슈" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "완료" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "진행중" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "신규" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "지연" %}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "완료율" %}</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -205,7 +206,7 @@
                     {% empty %}
                     <tr>
                         <td colspan="7" class="px-6 py-4 text-center text-gray-500">
-                            프로젝트 성과 데이터가 없습니다.
+                            {% trans "프로젝트 성과 데이터가 없습니다." %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -218,17 +219,17 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Priority Distribution -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">우선순위별 이슈 분포</h3>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">{% trans "우선순위별 이슈 분포" %}</h3>
             <div class="space-y-3">
                 {% for priority in priority_stats %}
                 <div class="flex items-center justify-between">
                     <span class="text-sm text-gray-600">
-                        {% if priority.priority_id == 1 %}낮음
-                        {% elif priority.priority_id == 2 %}보통
-                        {% elif priority.priority_id == 3 %}높음
-                        {% elif priority.priority_id == 4 %}긴급
-                        {% elif priority.priority_id == 5 %}즉시
-                        {% else %}기타{% endif %}
+                        {% if priority.priority_id == 1 %}{% trans "낮음" %}
+                        {% elif priority.priority_id == 2 %}{% trans "보통" %}
+                        {% elif priority.priority_id == 3 %}{% trans "높음" %}
+                        {% elif priority.priority_id == 4 %}{% trans "긴급" %}
+                        {% elif priority.priority_id == 5 %}{% trans "즉시" %}
+                        {% else %}{% trans "기타" %}{% endif %}
                     </span>
                     <div class="flex items-center">
                         <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
@@ -243,18 +244,18 @@
 
         <!-- Status Distribution -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">상태별 이슈 분포</h3>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">{% trans "상태별 이슈 분포" %}</h3>
             <div class="space-y-3">
                 {% for status in status_stats %}
                 <div class="flex items-center justify-between">
                     <span class="text-sm text-gray-600">
-                        {% if status.status_id == 1 %}신규
-                        {% elif status.status_id == 2 %}진행중
-                        {% elif status.status_id == 3 %}해결됨
-                        {% elif status.status_id == 4 %}피드백
-                        {% elif status.status_id == 5 %}종료
-                        {% elif status.status_id == 6 %}거부됨
-                        {% else %}기타{% endif %}
+                        {% if status.status_id == 1 %}{% trans "신규" %}
+                        {% elif status.status_id == 2 %}{% trans "진행중" %}
+                        {% elif status.status_id == 3 %}{% trans "해결됨" %}
+                        {% elif status.status_id == 4 %}{% trans "피드백" %}
+                        {% elif status.status_id == 5 %}{% trans "종료" %}
+                        {% elif status.status_id == 6 %}{% trans "거부됨" %}
+                        {% else %}{% trans "기타" %}{% endif %}
                     </span>
                     <div class="flex items-center">
                         <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">

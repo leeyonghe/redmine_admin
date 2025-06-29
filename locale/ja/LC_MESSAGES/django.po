@@ -1,0 +1,161 @@
+# Japanese translations for redmine_admin project.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the redmine_admin project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: redmine_admin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: \n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/base.html:29
+msgid "Redmine Admin"
+msgstr "Redmine Admin"
+
+#: templates/base.html:40
+msgid "대시보드"
+msgstr "ダッシュボード"
+
+#: templates/base.html:47
+msgid "개인별성과관리"
+msgstr "個人別業績管理"
+
+#: templates/base.html:54
+msgid "주간보고"
+msgstr "週次報告"
+
+#: templates/base.html:61
+msgid "월간보고"
+msgstr "月次報告"
+
+#: templates/base.html:68
+msgid "년간보고"
+msgstr "年次報告"
+
+#: templates/base.html:76
+msgid "로그아웃"
+msgstr "ログアウト"
+
+#: templates/base.html:95
+msgid "검색..."
+msgstr "検索..."
+
+#: templates/base.html:108
+msgid "관리자"
+msgstr "管理者"
+
+#: templates/dashboard.html:7
+msgid "프로젝트 현황과 성과를 한눈에 확인하세요"
+msgstr "プロジェクトの現状と業績を一目で確認してください"
+
+#: templates/dashboard.html:25
+msgid "활성 프로젝트"
+msgstr "アクティブプロジェクト"
+
+#: templates/dashboard.html:30
+msgid "지난 달 대비"
+msgstr "前月比"
+
+#: templates/dashboard.html:40
+msgid "완료된 작업"
+msgstr "完了したタスク"
+
+#: templates/dashboard.html:45
+msgid "지난 주 대비"
+msgstr "前週比"
+
+#: templates/dashboard.html:55
+msgid "총 이슈"
+msgstr "総課題数"
+
+#: templates/dashboard.html:70
+msgid "활성 사용자"
+msgstr "アクティブユーザー"
+
+#: templates/dashboard.html:85
+msgid "최근 활동"
+msgstr "最近の活動"
+
+#: templates/dashboard.html:95
+msgid "최근 활동이 없습니다."
+msgstr "最近の活動がありません。"
+
+#: templates/dashboard.html:105
+msgid "프로젝트별 현황"
+msgstr "プロジェクト別現状"
+
+#: templates/dashboard.html:115
+msgid "프로젝트 데이터가 없습니다."
+msgstr "プロジェクトデータがありません。"
+
+#: templates/yearly_report.html:7
+msgid "연간 프로젝트 성과와 비즈니스 현황을 종합적으로 분석하세요"
+msgstr "年間プロジェクト業績とビジネス現状を包括的に分析してください"
+
+#: templates/yearly_report.html:15
+msgid "연간 보고서 생성"
+msgstr "年次報告書生成"
+
+#: templates/yearly_report.html:18
+msgid "PDF 다운로드"
+msgstr "PDFダウンロード"
+
+#: templates/yearly_report.html:26
+msgid "연도 선택"
+msgstr "年度選択"
+
+#: templates/yearly_report.html:33
+msgid "년"
+msgstr "年"
+
+#: templates/yearly_report.html:50
+msgid "총 작업 시간"
+msgstr "総作業時間"
+
+#: templates/yearly_report.html:60
+msgid "성장률"
+msgstr "成長率"
+
+#: templates/yearly_report.html:75
+msgid "월별 이슈 현황"
+msgstr "月別課題現状"
+
+#: templates/yearly_report.html:82
+msgid "월"
+msgstr "月"
+
+#: templates/yearly_report.html:87
+msgid "개"
+msgstr "件"
+
+#: templates/yearly_report.html:90
+msgid "이번 연도에 생성된 이슈가 없습니다."
+msgstr "今年作成された課題がありません。"
+
+#: templates/yearly_report.html:100
+msgid "프로젝트별 성과"
+msgstr "プロジェクト別業績"
+
+#: templates/yearly_report.html:110
+msgid "이번 연도에 활동한 프로젝트가 없습니다."
+msgstr "今年活動したプロジェクトがありません。"
+
+#: templates/yearly_report.html:120
+msgid "연간 성과 요약"
+msgstr "年間業績サマリー"
+
+#: templates/yearly_report.html:125
+msgid "지표"
+msgstr "指標"
+
+#: templates/yearly_report.html:127
+msgid "증감률"
+msgstr "増減率" 

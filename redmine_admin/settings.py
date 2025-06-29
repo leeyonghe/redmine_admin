@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -79,7 +80,7 @@ WSGI_APPLICATION = 'redmine_admin.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Docker 환경 변수에서 데이터베이스 설정 가져오기
-DATABASE_URL = os.environ.get('DATABASE_URL', 'mysql://root:aqwsde123!@redmine_mysql:3306')
+DATABASE_URL = os.environ.get('DATABASE_URL', 'mysql://root:aqwsde123!@redmine_mysql:3306/redmine')
 
 # DATABASE_URL 파싱
 if DATABASE_URL.startswith('mysql://'):
@@ -93,7 +94,7 @@ if DATABASE_URL.startswith('mysql://'):
     DB_PASSWORD = user_pass[1]
     DB_HOST = host_port[0]
     DB_PORT = host_port[1] if len(host_port) > 1 else '3306'
-    DB_NAME = host_db[1]
+    DB_NAME = host_db[1] if len(host_db) > 1 else 'redmine'
 else:
     # 기본값
     DB_USER = 'root'
@@ -154,6 +155,21 @@ TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
 
 USE_TZ = True
+
+# 다국어 지원 설정
+LANGUAGES = [
+    ('ko', '한국어'),
+    ('en', 'English'),
+    ('ja', '日本語'),
+    ('zh-hans', '简体中文'),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
+# 언어 선택을 위한 미들웨어 설정
+LANGUAGE_COOKIE_NAME = 'django_language'
 
 
 # Static files (CSS, JavaScript, Images)

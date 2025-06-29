@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('set-language/', views.set_language, name='set_language'),
     path('performance/', views.performance_view, name='performance'),
     path('weekly-report/', views.weekly_report_view, name='weekly_report'),
     path('weekly-report/<int:year>/<int:week>/', views.weekly_report_view, name='weekly_report_with_week'),

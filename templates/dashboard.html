@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}대시보드 - Redmine Admin{% endblock %}
+{% block title %}{% trans "대시보드" %} - {% trans "Redmine Admin" %}{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
     <!-- Page Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">대시보드</h1>
-            <p class="mt-2 text-gray-600">프로젝트 현황과 성과를 한눈에 확인하세요</p>
+            <h1 class="text-3xl font-bold text-gray-900">{% trans "대시보드" %}</h1>
+            <p class="mt-2 text-gray-600">{% trans "프로젝트 현황과 성과를 한눈에 확인하세요" %}</p>
         </div>
         <!-- <div class="flex space-x-3">
             <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
@@ -30,13 +31,13 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">활성 프로젝트</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "활성 프로젝트" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ total_projects }}</p>
                 </div>
             </div>
             <div class="mt-4">
                 <span class="text-sm text-green-600">+2.5%</span>
-                <span class="text-sm text-gray-500">지난 달 대비</span>
+                <span class="text-sm text-gray-500">{% trans "지난 달 대비" %}</span>
             </div>
         </div>
 
@@ -48,13 +49,13 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">완료된 작업</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "완료된 작업" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ completed_issues }}</p>
                 </div>
             </div>
             <div class="mt-4">
                 <span class="text-sm text-green-600">+12.3%</span>
-                <span class="text-sm text-gray-500">지난 주 대비</span>
+                <span class="text-sm text-gray-500">{% trans "지난 주 대비" %}</span>
             </div>
         </div>
 
@@ -66,13 +67,13 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">총 이슈</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "총 이슈" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ total_issues }}</p>
                 </div>
             </div>
             <div class="mt-4">
                 <span class="text-sm text-red-600">-5.2%</span>
-                <span class="text-sm text-gray-500">지난 주 대비</span>
+                <span class="text-sm text-gray-500">{% trans "지난 주 대비" %}</span>
             </div>
         </div>
 
@@ -84,13 +85,13 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">활성 사용자</p>
+                    <p class="text-sm font-medium text-gray-600">{% trans "활성 사용자" %}</p>
                     <p class="text-2xl font-bold text-gray-900">{{ active_users }}</p>
                 </div>
             </div>
             <div class="mt-4">
                 <span class="text-sm text-green-600">+8.1%</span>
-                <span class="text-sm text-gray-500">지난 달 대비</span>
+                <span class="text-sm text-gray-500">{% trans "지난 달 대비" %}</span>
             </div>
         </div>
     </div>
@@ -100,7 +101,7 @@
         <!-- Recent Activity -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">최근 활동</h3>
+                <h3 class="text-lg font-medium text-gray-900">{% trans "최근 활동" %}</h3>
             </div>
             <div class="p-6">
                 <div class="space-y-4">
@@ -115,7 +116,7 @@
                     </div>
                     {% empty %}
                     <div class="text-center text-gray-500 py-4">
-                        <p>최근 활동이 없습니다.</p>
+                        <p>{% trans "최근 활동이 없습니다." %}</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -125,7 +126,7 @@
         <!-- Project Stats -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">프로젝트별 현황</h3>
+                <h3 class="text-lg font-medium text-gray-900">{% trans "프로젝트별 현황" %}</h3>
             </div>
             <div class="p-6">
                 <div class="space-y-4">
@@ -143,7 +144,7 @@
                     </div>
                     {% empty %}
                     <div class="text-center text-gray-500 py-4">
-                        <p>프로젝트 데이터가 없습니다.</p>
+                        <p>{% trans "프로젝트 데이터가 없습니다." %}</p>
                     </div>
                     {% endfor %}
                 </div>

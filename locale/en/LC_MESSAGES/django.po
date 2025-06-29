@@ -1,0 +1,161 @@
+# English translations for redmine_admin project.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the redmine_admin project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: redmine_admin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/base.html:29
+msgid "Redmine Admin"
+msgstr "Redmine Admin"
+
+#: templates/base.html:40
+msgid "대시보드"
+msgstr "Dashboard"
+
+#: templates/base.html:47
+msgid "개인별성과관리"
+msgstr "Individual Performance Management"
+
+#: templates/base.html:54
+msgid "주간보고"
+msgstr "Weekly Report"
+
+#: templates/base.html:61
+msgid "월간보고"
+msgstr "Monthly Report"
+
+#: templates/base.html:68
+msgid "년간보고"
+msgstr "Annual Report"
+
+#: templates/base.html:76
+msgid "로그아웃"
+msgstr "Logout"
+
+#: templates/base.html:95
+msgid "검색..."
+msgstr "Search..."
+
+#: templates/base.html:108
+msgid "관리자"
+msgstr "Administrator"
+
+#: templates/dashboard.html:7
+msgid "프로젝트 현황과 성과를 한눈에 확인하세요"
+msgstr "Check project status and performance at a glance"
+
+#: templates/dashboard.html:25
+msgid "활성 프로젝트"
+msgstr "Active Projects"
+
+#: templates/dashboard.html:30
+msgid "지난 달 대비"
+msgstr "vs Last Month"
+
+#: templates/dashboard.html:40
+msgid "완료된 작업"
+msgstr "Completed Tasks"
+
+#: templates/dashboard.html:45
+msgid "지난 주 대비"
+msgstr "vs Last Week"
+
+#: templates/dashboard.html:55
+msgid "총 이슈"
+msgstr "Total Issues"
+
+#: templates/dashboard.html:70
+msgid "활성 사용자"
+msgstr "Active Users"
+
+#: templates/dashboard.html:85
+msgid "최근 활동"
+msgstr "Recent Activity"
+
+#: templates/dashboard.html:95
+msgid "최근 활동이 없습니다."
+msgstr "No recent activity."
+
+#: templates/dashboard.html:105
+msgid "프로젝트별 현황"
+msgstr "Project Status"
+
+#: templates/dashboard.html:115
+msgid "프로젝트 데이터가 없습니다."
+msgstr "No project data available."
+
+#: templates/yearly_report.html:7
+msgid "연간 프로젝트 성과와 비즈니스 현황을 종합적으로 분석하세요"
+msgstr "Comprehensive analysis of annual project performance and business status"
+
+#: templates/yearly_report.html:15
+msgid "연간 보고서 생성"
+msgstr "Generate Annual Report"
+
+#: templates/yearly_report.html:18
+msgid "PDF 다운로드"
+msgstr "Download PDF"
+
+#: templates/yearly_report.html:26
+msgid "연도 선택"
+msgstr "Select Year"
+
+#: templates/yearly_report.html:33
+msgid "년"
+msgstr "Year"
+
+#: templates/yearly_report.html:50
+msgid "총 작업 시간"
+msgstr "Total Work Hours"
+
+#: templates/yearly_report.html:60
+msgid "성장률"
+msgstr "Growth Rate"
+
+#: templates/yearly_report.html:75
+msgid "월별 이슈 현황"
+msgstr "Monthly Issue Status"
+
+#: templates/yearly_report.html:82
+msgid "월"
+msgstr "Month"
+
+#: templates/yearly_report.html:87
+msgid "개"
+msgstr ""
+
+#: templates/yearly_report.html:90
+msgid "이번 연도에 생성된 이슈가 없습니다."
+msgstr "No issues created this year."
+
+#: templates/yearly_report.html:100
+msgid "프로젝트별 성과"
+msgstr "Project Performance"
+
+#: templates/yearly_report.html:110
+msgid "이번 연도에 활동한 프로젝트가 없습니다."
+msgstr "No projects active this year."
+
+#: templates/yearly_report.html:120
+msgid "연간 성과 요약"
+msgstr "Annual Performance Summary"
+
+#: templates/yearly_report.html:125
+msgid "지표"
+msgstr "Indicator"
+
+#: templates/yearly_report.html:127
+msgid "증감률"
+msgstr "Change Rate" 

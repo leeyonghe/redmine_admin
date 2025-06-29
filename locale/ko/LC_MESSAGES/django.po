@@ -1,0 +1,161 @@
+# Korean translations for redmine_admin project.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the redmine_admin project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: redmine_admin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: \n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/base.html:29
+msgid "Redmine Admin"
+msgstr "Redmine Admin"
+
+#: templates/base.html:40
+msgid "대시보드"
+msgstr "대시보드"
+
+#: templates/base.html:47
+msgid "개인별성과관리"
+msgstr "개인별성과관리"
+
+#: templates/base.html:54
+msgid "주간보고"
+msgstr "주간보고"
+
+#: templates/base.html:61
+msgid "월간보고"
+msgstr "월간보고"
+
+#: templates/base.html:68
+msgid "년간보고"
+msgstr "년간보고"
+
+#: templates/base.html:76
+msgid "로그아웃"
+msgstr "로그아웃"
+
+#: templates/base.html:95
+msgid "검색..."
+msgstr "검색..."
+
+#: templates/base.html:108
+msgid "관리자"
+msgstr "관리자"
+
+#: templates/dashboard.html:7
+msgid "프로젝트 현황과 성과를 한눈에 확인하세요"
+msgstr "프로젝트 현황과 성과를 한눈에 확인하세요"
+
+#: templates/dashboard.html:25
+msgid "활성 프로젝트"
+msgstr "활성 프로젝트"
+
+#: templates/dashboard.html:30
+msgid "지난 달 대비"
+msgstr "지난 달 대비"
+
+#: templates/dashboard.html:40
+msgid "완료된 작업"
+msgstr "완료된 작업"
+
+#: templates/dashboard.html:45
+msgid "지난 주 대비"
+msgstr "지난 주 대비"
+
+#: templates/dashboard.html:55
+msgid "총 이슈"
+msgstr "총 이슈"
+
+#: templates/dashboard.html:70
+msgid "활성 사용자"
+msgstr "활성 사용자"
+
+#: templates/dashboard.html:85
+msgid "최근 활동"
+msgstr "최근 활동"
+
+#: templates/dashboard.html:95
+msgid "최근 활동이 없습니다."
+msgstr "최근 활동이 없습니다."
+
+#: templates/dashboard.html:105
+msgid "프로젝트별 현황"
+msgstr "프로젝트별 현황"
+
+#: templates/dashboard.html:115
+msgid "프로젝트 데이터가 없습니다."
+msgstr "프로젝트 데이터가 없습니다."
+
+#: templates/yearly_report.html:7
+msgid "연간 프로젝트 성과와 비즈니스 현황을 종합적으로 분석하세요"
+msgstr "연간 프로젝트 성과와 비즈니스 현황을 종합적으로 분석하세요"
+
+#: templates/yearly_report.html:15
+msgid "연간 보고서 생성"
+msgstr "연간 보고서 생성"
+
+#: templates/yearly_report.html:18
+msgid "PDF 다운로드"
+msgstr "PDF 다운로드"
+
+#: templates/yearly_report.html:26
+msgid "연도 선택"
+msgstr "연도 선택"
+
+#: templates/yearly_report.html:33
+msgid "년"
+msgstr "년"
+
+#: templates/yearly_report.html:50
+msgid "총 작업 시간"
+msgstr "총 작업 시간"
+
+#: templates/yearly_report.html:60
+msgid "성장률"
+msgstr "성장률"
+
+#: templates/yearly_report.html:75
+msgid "월별 이슈 현황"
+msgstr "월별 이슈 현황"
+
+#: templates/yearly_report.html:82
+msgid "월"
+msgstr "월"
+
+#: templates/yearly_report.html:87
+msgid "개"
+msgstr "개"
+
+#: templates/yearly_report.html:90
+msgid "이번 연도에 생성된 이슈가 없습니다."
+msgstr "이번 연도에 생성된 이슈가 없습니다."
+
+#: templates/yearly_report.html:100
+msgid "프로젝트별 성과"
+msgstr "프로젝트별 성과"
+
+#: templates/yearly_report.html:110
+msgid "이번 연도에 활동한 프로젝트가 없습니다."
+msgstr "이번 연도에 활동한 프로젝트가 없습니다."
+
+#: templates/yearly_report.html:120
+msgid "연간 성과 요약"
+msgstr "연간 성과 요약"
+
+#: templates/yearly_report.html:125
+msgid "지표"
+msgstr "지표"
+
+#: templates/yearly_report.html:127
+msgid "증감률"
+msgstr "증감률" 
