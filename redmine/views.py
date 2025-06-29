@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count, Sum, Avg, Q
 from django.utils import timezone
@@ -9,6 +10,7 @@ from .models import Project, Issue, TimeEntry, IssueStatus, Tracker
 
 # Create your views here.
 
+@login_required
 def index(request):
     print("index")
     # 실제 데이터 가져오기
@@ -43,6 +45,10 @@ def index(request):
     return render(request, 'dashboard.html', context)
 
 def login_view(request):
+    # 이미 로그인된 사용자는 메인 페이지로 리다이렉트
+    if request.user.is_authenticated:
+        return redirect('redmine:index')
+        
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -62,6 +68,11 @@ def login_view(request):
     
     return render(request, 'login.html')
 
+def logout_view(request):
+    logout(request)
+    return redirect('redmine:login')
+
+@login_required
 def performance_view(request):
     try:
         print("performance_view start")
@@ -100,6 +111,7 @@ def performance_view(request):
         print(f"Error in performance_view: {str(e)}")
         return HttpResponse(f"Error: {str(e)}")
 
+@login_required
 def weekly_report_view(request):
     # 현재 주의 데이터
     now = timezone.now()
@@ -143,6 +155,7 @@ def weekly_report_view(request):
     
     return render(request, 'weekly_report.html', context)
 
+@login_required
 def monthly_report_view(request):
     # 현재 달의 데이터
     now = timezone.now()
@@ -200,6 +213,7 @@ def monthly_report_view(request):
     
     return render(request, 'monthly_report.html', context)
 
+@login_required
 def yearly_report_view(request):
     # 현재 연도의 데이터
     now = timezone.now()
