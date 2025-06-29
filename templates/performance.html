@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">개인별성과관리</h1>
-            <p class="mt-2 text-gray-600">팀원들의 성과를 추적하고 관리하세요</p>
+            <p class="mt-2 text-gray-600">팀원들의 이슈 처리 성과를 추적하고 관리하세요</p>
         </div>
         <div class="flex space-x-3">
             <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Performance Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-blue-100 rounded-lg">
@@ -44,8 +44,22 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">평균 성과</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ avg_performance|floatformat:1 }}h</p>
+                    <p class="text-sm font-medium text-gray-600">총 이슈</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_issues }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-blue-100 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">완료된 이슈</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ completed_issues }}</p>
                 </div>
             </div>
         </div>
@@ -54,12 +68,26 @@
             <div class="flex items-center">
                 <div class="p-3 bg-yellow-100 rounded-lg">
                     <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">이번 달 목표</p>
-                    <p class="text-2xl font-bold text-gray-900">92%</p>
+                    <p class="text-sm font-medium text-gray-600">진행중</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ in_progress_issues }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-red-100 rounded-lg">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">지연된 이슈</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ delayed_issues }}</p>
                 </div>
             </div>
         </div>
@@ -68,17 +96,19 @@
     <!-- Performance Table -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">팀원별 성과 현황</h3>
+            <h3 class="text-lg font-medium text-gray-900">팀원별 이슈 처리 현황</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">팀원</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">부서</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료된 작업</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">총 시간</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">성과율</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">총 이슈</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">진행중</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">신규</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">지연</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료율</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">액션</th>
                     </tr>
                 </thead>
@@ -90,28 +120,26 @@
                                 <img class="h-10 w-10 rounded-full" src="https://via.placeholder.com/40" alt="">
                                 <div class="ml-4">
                                     <div class="text-sm font-medium text-gray-900">
-                                        {% if user.user__firstname or user.user__lastname %}
-                                            {{ user.user__firstname }} {{ user.user__lastname }}
-                                        {% else %}
-                                            {{ user.user__login }}
-                                        {% endif %}
+                                        {{ user.user_firstname }} {{ user.user_lastname }}
                                     </div>
-                                    <div class="text-sm text-gray-500">{{ user.user__login }}</div>
+                                    <div class="text-sm text-gray-500">{{ user.user_login }}</div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">개발팀</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.total_issues }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.total_hours|floatformat:1 }}h</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">{{ user.completed_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium">{{ user.in_progress_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ user.new_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">{{ user.delayed_issues }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                    {% if user.total_hours > 0 %}
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: {% if user.total_hours > 100 %}100{% else %}{{ user.total_hours|floatformat:0 }}{% endif %}%"></div>
+                                    {% if user.total_issues > 0 %}
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: {% if user.completed_issues > user.total_issues %}100{% else %}{{ user.completed_issues|floatformat:0 }}{% endif %}%"></div>
                                     {% endif %}
                                 </div>
                                 <span class="text-sm text-gray-900">
-                                    {% if user.total_hours > 100 %}100{% else %}{{ user.total_hours|floatformat:0 }}{% endif %}%
+                                    {% if user.total_issues > 0 %}{{ user.completed_issues|floatformat:0 }}{% else %}0{% endif %}%
                                 </span>
                             </div>
                         </td>
@@ -121,7 +149,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                        <td colspan="8" class="px-6 py-4 text-center text-gray-500">
                             성과 데이터가 없습니다.
                         </td>
                     </tr>
@@ -134,7 +162,7 @@
     <!-- Project Performance -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">프로젝트별 성과</h3>
+            <h3 class="text-lg font-medium text-gray-900">프로젝트별 이슈 현황</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -142,8 +170,10 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">프로젝트</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">총 이슈</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료된 이슈</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">총 시간</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">진행중</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">신규</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">지연</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">완료율</th>
                     </tr>
                 </thead>
@@ -152,30 +182,84 @@
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ project.name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ project.total_issues }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ project.completed_issues }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ project.total_hours|default:0|floatformat:1 }}h</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">{{ project.completed_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium">{{ project.in_progress_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ project.new_issues }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">{{ project.delayed_issues }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
                                     {% if project.total_issues > 0 %}
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: {% if project.completed_issues > project.total_issues %}100{% else %}{{ project.completed_issues|floatformat:0 }}{% endif %}%"></div>
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: {{ project.completion_rate|floatformat:0 }}%"></div>
                                     {% endif %}
                                 </div>
-                                <span class="text-sm text-gray-900">
-                                    {% if project.total_issues > 0 %}{{ project.completed_issues|floatformat:0 }}{% else %}0{% endif %}%
-                                </span>
+                                <span class="text-sm text-gray-900">{{ project.completion_rate|floatformat:1 }}%</span>
                             </div>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">
                             프로젝트 성과 데이터가 없습니다.
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Statistics Charts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Priority Distribution -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">우선순위별 이슈 분포</h3>
+            <div class="space-y-3">
+                {% for priority in priority_stats %}
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-600">
+                        {% if priority.priority_id == 1 %}낮음
+                        {% elif priority.priority_id == 2 %}보통
+                        {% elif priority.priority_id == 3 %}높음
+                        {% elif priority.priority_id == 4 %}긴급
+                        {% elif priority.priority_id == 5 %}즉시
+                        {% else %}기타{% endif %}
+                    </span>
+                    <div class="flex items-center">
+                        <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: {% if total_issues > 0 %}{{ priority.count|floatformat:0 }}{% else %}0{% endif %}%"></div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">{{ priority.count }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Status Distribution -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">상태별 이슈 분포</h3>
+            <div class="space-y-3">
+                {% for status in status_stats %}
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-600">
+                        {% if status.status_id == 1 %}신규
+                        {% elif status.status_id == 2 %}진행중
+                        {% elif status.status_id == 3 %}해결됨
+                        {% elif status.status_id == 4 %}피드백
+                        {% elif status.status_id == 5 %}종료
+                        {% elif status.status_id == 6 %}거부됨
+                        {% else %}기타{% endif %}
+                    </span>
+                    <div class="flex items-center">
+                        <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
+                            <div class="bg-green-600 h-2 rounded-full" style="width: {% if total_issues > 0 %}{{ status.count|floatformat:0 }}{% else %}0{% endif %}%"></div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">{{ status.count }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

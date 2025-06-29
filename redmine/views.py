@@ -3,7 +3,9 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Count, Sum, Avg, Q
+from django.db.models import Count, Sum, Avg, Q, Case, When, ExpressionWrapper, F, FloatField
+from django.db.models.functions import Cast
+from django.db.models import Value
 from django.utils import timezone
 from datetime import datetime, timedelta
 import hashlib
@@ -93,33 +95,82 @@ def logout_view(request):
 def performance_view(request):
     try:
         print("performance_view start")
-        # 개인별 성과 데이터
-        user_performance = TimeEntry.objects.values(
-            'user__login', 'user__firstname', 'user__lastname'
+        
+        # 개인별 성과 데이터 - 직접 Issue 테이블 참조
+        user_performance = Issue.objects.values(
+            'assigned_to_id'
         ).annotate(
-            total_hours=Sum('hours'),
-            total_issues=Count('issue', distinct=True),
-            avg_hours_per_issue=Avg('hours')
-        ).order_by('-total_hours')
+            total_issues=Count('id'),
+            completed_issues=Count('id', filter=Q(status_id=5)),
+            in_progress_issues=Count('id', filter=Q(status_id=2)),
+            new_issues=Count('id', filter=Q(status_id=1)),
+            avg_priority=Avg('priority_id'),
+            delayed_issues=Count('id', filter=Q(due_date__lt=timezone.now().date(), status_id__in=[1,2]))
+        ).filter(assigned_to_id__isnull=False).order_by('-total_issues')
+        
+        # 사용자 정보 추가
+        for user_data in user_performance:
+            try:
+                redmine_user = RedmineUser.objects.get(id=user_data['assigned_to_id'])
+                user_data['user_login'] = redmine_user.login
+                user_data['user_firstname'] = redmine_user.firstname
+                user_data['user_lastname'] = redmine_user.lastname
+            except RedmineUser.DoesNotExist:
+                user_data['user_login'] = f"User_{user_data['assigned_to_id']}"
+                user_data['user_firstname'] = "Unknown"
+                user_data['user_lastname'] = "User"
+        
         print("user_performance query completed")
         
-        # 부서별 통계 (프로젝트별로 그룹화)
+        # 프로젝트별 성과 - 직접 Issue 테이블 참조
         project_performance = Project.objects.annotate(
-            total_hours=Sum('timeentry__hours'),
             total_issues=Count('issue'),
-            completed_issues=Count('issue', filter=Q(issue__status_id=5))
-        ).order_by('-total_hours')
+            completed_issues=Count('issue', filter=Q(issue__status_id=5)),
+            in_progress_issues=Count('issue', filter=Q(issue__status_id=2)),
+            new_issues=Count('issue', filter=Q(issue__status_id=1)),
+            delayed_issues=Count('issue', filter=Q(issue__due_date__lt=timezone.now().date(), issue__status_id__in=[1,2])),
+            avg_priority=Avg('issue__priority_id'),
+            completion_rate=Case(
+                When(total_issues=0, then=Value(0.0, output_field=FloatField())),
+                default=ExpressionWrapper(
+                    Cast('completed_issues', FloatField()) * 100.0 / Cast('total_issues', FloatField()),
+                    output_field=FloatField()
+                )
+            )
+        ).filter(total_issues__gt=0).order_by('-total_issues')
+        
         print("project_performance query completed")
         
-        # 전체 평균 시간 계산
-        total_avg_hours = TimeEntry.objects.aggregate(avg_hours=Avg('hours'))['avg_hours'] or 0
+        # 전체 이슈 통계
+        total_issues = Issue.objects.count()
+        completed_issues = Issue.objects.filter(status_id=5).count()
+        in_progress_issues = Issue.objects.filter(status_id=2).count()
+        new_issues = Issue.objects.filter(status_id=1).count()
+        delayed_issues = Issue.objects.filter(due_date__lt=timezone.now().date(), status_id__in=[1,2]).count()
+        
+        # 우선순위별 통계
+        priority_stats = Issue.objects.values('priority_id').annotate(
+            count=Count('id')
+        ).order_by('priority_id')
+        
+        # 상태별 통계
+        status_stats = Issue.objects.values('status_id').annotate(
+            count=Count('id')
+        ).order_by('status_id')
+        
         print("total_avg_hours calculated")
         
         context = {
             'user_performance': user_performance,
             'project_performance': project_performance,
             'total_users': user_performance.count(),
-            'avg_performance': total_avg_hours,
+            'total_issues': total_issues,
+            'completed_issues': completed_issues,
+            'in_progress_issues': in_progress_issues,
+            'new_issues': new_issues,
+            'delayed_issues': delayed_issues,
+            'priority_stats': priority_stats,
+            'status_stats': status_stats,
         }
         print("context created")
         
