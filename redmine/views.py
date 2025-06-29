@@ -8,7 +8,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 import hashlib
 from .models import Project, Issue, TimeEntry, IssueStatus, Tracker, RedmineUser
-
+from django.contrib.auth.models import User
 # Create your views here.
 
 @login_required
@@ -54,47 +54,33 @@ def login_view(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         remember = request.POST.get('remember')
+
+        print(f"Username: {username}")
+        print(f"Password: {password}")
+        print(f"Remember: {remember}")
         
-        try:
-            # RedmineUser 테이블에서 사용자 조회
-            user = RedmineUser.objects.get(login=username, status=1)  # status=1은 활성 사용자
+        # Django의 authenticate() 함수 사용 (커스텀 백엔드가 자동으로 사용됨)
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            print(f"Login Success: {user.username}")
+            login(request, user)
             
-            # Redmine의 비밀번호 해시 방식 (SHA1)
-            hashed_password = hashlib.sha1(password.encode('utf-8')).hexdigest()
+            if not remember:
+                request.session.set_expiry(0)  # 브라우저 종료시 세션 만료
             
-            if user.hashed_password == hashed_password:
-                # Django의 User 모델에서 해당 사용자 조회 (생성하지 않음)
-                from django.contrib.auth.models import User
-                try:
-                    django_user = User.objects.get(username=user.login)
-                except User.DoesNotExist:
-                    return render(request, 'login.html', {
-                        'error_message': '등록되지 않은 사용자입니다. 관리자에게 문의하세요.'
-                    })
-                
-                # Django 세션에 로그인
-                login(request, django_user)
-                
-                if not remember:
-                    request.session.set_expiry(0)  # 브라우저 종료시 세션 만료
-                
-                # 마지막 로그인 시간 업데이트
-                user.last_login_on = timezone.now()
-                user.save()
-                
-                return redirect('redmine:index')
-            else:
-                return render(request, 'login.html', {
-                    'error_message': '사용자명 또는 비밀번호가 올바르지 않습니다.'
-                })
-                
-        except RedmineUser.DoesNotExist:
+            # RedmineUser의 마지막 로그인 시간 업데이트
+            try:
+                redmine_user = RedmineUser.objects.get(login=username)
+                redmine_user.last_login_on = timezone.now()
+                redmine_user.save()
+            except RedmineUser.DoesNotExist:
+                pass
+            
+            return redirect('redmine:index')
+        else:
             return render(request, 'login.html', {
                 'error_message': '사용자명 또는 비밀번호가 올바르지 않습니다.'
-            })
-        except Exception as e:
-            return render(request, 'login.html', {
-                'error_message': f'로그인 중 오류가 발생했습니다: {str(e)}'
             })
     
     return render(request, 'login.html')
