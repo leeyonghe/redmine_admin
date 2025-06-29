@@ -180,45 +180,80 @@ def performance_view(request):
         return HttpResponse(f"Error: {str(e)}")
 
 @login_required
-def weekly_report_view(request):
-    # 현재 주의 데이터
-    now = timezone.now()
-    start_of_week = now - timedelta(days=now.weekday())
-    end_of_week = start_of_week + timedelta(days=6)
+def weekly_report_view(request, year=None, week=None):
+    # 주차 파라미터가 없으면 현재 주 사용
+    if year is None or week is None:
+        now = timezone.now()
+        year = now.year
+        week = now.isocalendar()[1]  # ISO 주차
+    
+    # 해당 연도의 1월 1일
+    year_start = datetime(year, 1, 1)
+    
+    # 해당 주의 시작일 계산 (월요일 기준)
+    week_start = year_start + timedelta(days=(week - 1) * 7 - year_start.weekday())
+    week_end = week_start + timedelta(days=6)
+    
+    # 이전 주와 다음 주 계산
+    prev_week_start = week_start - timedelta(days=7)
+    next_week_start = week_start + timedelta(days=7)
+    
+    prev_year, prev_week, _ = prev_week_start.isocalendar()
+    next_year, next_week, _ = next_week_start.isocalendar()
     
     # 주간 통계
     weekly_issues = Issue.objects.filter(
-        created_on__gte=start_of_week,
-        created_on__lte=end_of_week
-    )
+        created_on__gte=week_start,
+        created_on__lte=week_end
+    ).select_related('project')
+
+    weekly_issues = weekly_issues.select_related('project').order_by('-created_on')
+    
+    # 담당자 정보 추가
+    for issue in weekly_issues:
+        if issue.assigned_to_id:
+            try:
+                assigned_user = RedmineUser.objects.get(id=issue.assigned_to_id)
+                issue.assigned_name = f"{assigned_user.firstname} {assigned_user.lastname}"
+                print(f"assigned_name: {issue.assigned_name}")  
+            except RedmineUser.DoesNotExist:
+                issue.assigned_name = f"User_{issue.assigned_to_id}"
+        else:
+            issue.assigned_name = "미지정"
     
     weekly_time_entries = TimeEntry.objects.filter(
-        spent_on__gte=start_of_week.date(),
-        spent_on__lte=end_of_week.date()
+        spent_on__gte=week_start.date(),
+        spent_on__lte=week_end.date()
     )
     
     # 프로젝트별 주간 작업
     project_weekly_work = Project.objects.annotate(
         weekly_issues=Count('issue', filter=Q(
-            issue__created_on__gte=start_of_week,
-            issue__created_on__lte=end_of_week
+            issue__created_on__gte=week_start,
+            issue__created_on__lte=week_end
         )),
         weekly_hours=Sum('timeentry__hours', filter=Q(
-            timeentry__spent_on__gte=start_of_week.date(),
-            timeentry__spent_on__lte=end_of_week.date()
+            timeentry__spent_on__gte=week_start.date(),
+            timeentry__spent_on__lte=week_end.date()
         ))
     ).filter(weekly_issues__gt=0).order_by('-weekly_issues')
     
     context = {
-        'week_start': start_of_week,
-        'week_end': end_of_week,
+        'year': year,
+        'week': week,
+        'week_start': week_start,
+        'week_end': week_end,
+        'prev_year': prev_year,
+        'prev_week': prev_week,
+        'next_year': next_year,
+        'next_week': next_week,
         'total_weekly_issues': weekly_issues.count(),
         'completed_weekly_issues': weekly_issues.filter(status_id=5).count(),
         'in_progress_issues': weekly_issues.filter(status_id=2).count(),
-        'delayed_issues': weekly_issues.filter(due_date__lt=now.date(), status_id__in=[1,2]).count(),
+        'delayed_issues': weekly_issues.filter(due_date__lt=timezone.now().date(), status_id__in=[1,2]).count(),
         'total_weekly_hours': weekly_time_entries.aggregate(total=Sum('hours'))['total'] or 0,
         'project_weekly_work': project_weekly_work,
-        'weekly_issues': weekly_issues.select_related('project').order_by('-created_on'),
+        'weekly_issues': weekly_issues,
     }
     
     return render(request, 'weekly_report.html', context)

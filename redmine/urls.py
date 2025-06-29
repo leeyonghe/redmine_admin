@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('performance/', views.performance_view, name='performance'),
     path('weekly-report/', views.weekly_report_view, name='weekly_report'),
+    path('weekly-report/<int:year>/<int:week>/', views.weekly_report_view, name='weekly_report_with_week'),
     path('monthly-report/', views.monthly_report_view, name='monthly_report'),
     path('yearly-report/', views.yearly_report_view, name='yearly_report'),
 ] 
