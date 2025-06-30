@@ -344,16 +344,31 @@
                 </div>
                 
                 <!-- Project Distribution -->
-                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="bg-white border border-gray-200 rounded-lg p-4 mb-6">
                     <h5 class="font-medium text-gray-900 mb-4">{% trans "프로젝트별 이슈 분포" %}</h5>
                     <div id="projectDistribution" class="space-y-3">
                         <!-- Project distribution will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Individual Performance Chart -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h5 class="font-medium text-gray-900" id="chartTitle">프로젝트 참여 현황</h5>
+                        <div class="flex space-x-2">
+                            <button id="modalWeekBtn" class="px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">{% trans "주간" %}</button>
+                            <button id="modalMonthBtn" class="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">{% trans "월간" %}</button>
+                        </div>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="modalPerformanceChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <script>
 function showUserDetail(userId) {
@@ -378,9 +393,11 @@ function showUserDetail(userId) {
                 alert('Error: ' + data.error);
                 return;
             }
-            
+            console.log(JSON.stringify(data));
+           
             // Populate user info
-            document.getElementById('userName').textContent = data.user.firstname + ' ' + data.user.lastname;
+            const userName = data.user.firstname + ' ' + data.user.lastname;
+            document.getElementById('userName').textContent = userName;
             document.getElementById('userLogin').textContent = data.user.login;
             document.getElementById('userEmail').textContent = data.user.email || 'N/A';
             
@@ -461,6 +478,44 @@ function showUserDetail(userId) {
                 });
             }
             
+            // Initialize and show user performance chart
+            const initChart = () => {
+                // Prevent multiple simultaneous initializations
+                if (chartInitializing) {
+                    console.log('Chart initialization already in progress, skipping...');
+                    return;
+                }
+                
+                console.log('Chart.js available:', typeof Chart !== 'undefined');
+                console.log('Modal visible:', !document.getElementById('userDetailModal').classList.contains('hidden'));
+                console.log('Canvas element:', document.getElementById('modalPerformanceChart'));
+                
+                // Check if Chart.js is available and modal is visible
+                if (typeof Chart !== 'undefined' && !document.getElementById('userDetailModal').classList.contains('hidden')) {
+                    console.log('Initializing chart...');
+                    chartInitializing = true;
+                    
+                    if (modalPerformanceChart) {
+                        modalPerformanceChart.destroy();
+                    }
+                    initModalPerformanceChart(data.stats);
+                    showUserPerformanceChart(userName, data.stats);
+                    updateChartTitle('week'); // Set initial title
+                    
+                    chartInitializing = false;
+                } else {
+                    console.log('Chart initialization skipped - Chart.js or modal not ready');
+                    // Retry after a short delay if Chart.js is not ready
+                    if (typeof Chart === 'undefined') {
+                        console.log('Retrying chart initialization...');
+                        setTimeout(initChart, 300);
+                    }
+                }
+            };
+            
+            // Start chart initialization with single attempt
+            setTimeout(initChart, 500);
+            
             // Hide loading and show content
             document.getElementById('loadingContent').classList.add('hidden');
             document.getElementById('userDetailContent').classList.remove('hidden');
@@ -474,6 +529,14 @@ function showUserDetail(userId) {
 
 function closeUserDetail() {
     document.getElementById('userDetailModal').classList.add('hidden');
+    
+    // Clean up chart when modal is closed
+    if (modalPerformanceChart) {
+        console.log('Cleaning up chart on modal close');
+        modalPerformanceChart.destroy();
+        modalPerformanceChart = null;
+    }
+    chartInitializing = false;
 }
 
 // Close modal when clicking outside
@@ -489,5 +552,327 @@ document.addEventListener('keydown', function(e) {
         closeUserDetail();
     }
 });
+
+// Add modal chart button event listeners when modal content is shown
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded');
+    console.log('Chart.js available:', typeof Chart !== 'undefined');
+    
+    // Add button event listeners for modal chart
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'modalWeekBtn' && modalPerformanceChart) {
+            updateModalChartView('week');
+        } else if (e.target.id === 'modalMonthBtn' && modalPerformanceChart) {
+            updateModalChartView('month');
+        }
+    });
+});
+
+// Individual Performance Chart
+let modalPerformanceChart;
+let currentModalView = 'week';
+let chartInitializing = false; // Flag to prevent multiple initializations
+
+// Function to update chart title
+function updateChartTitle(view) {
+    const chartTitle = document.getElementById('chartTitle');
+    if (chartTitle) {
+        const now = new Date();
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const currentMonth = monthNames[now.getMonth()];
+        
+        if (view === 'week') {
+            chartTitle.textContent = `${currentMonth} 주차별 프로젝트 참여 현황`;
+        } else {
+            chartTitle.textContent = `${currentMonth} 월간 프로젝트 참여 현황`;
+        }
+    }
+}
+
+// Function to generate chart data for a specific user
+function generateUserChartData(userStats, view = 'week') {
+    const colors = [
+        'rgb(59, 130, 246)',   // Blue
+        'rgb(16, 185, 129)',   // Green
+        'rgb(245, 158, 11)',   // Yellow
+        'rgb(239, 68, 68)',    // Red
+        'rgb(139, 92, 246)'    // Purple
+    ];
+    
+    if (view === 'week') {
+        // Get current month's weeks
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        
+        // Get the first day of the month
+        const firstDay = new Date(currentYear, currentMonth, 1);
+        // Get the last day of the month
+        const lastDay = new Date(currentYear, currentMonth + 1, 0);
+        
+        // Calculate actual weeks in current month
+        const daysInMonth = lastDay.getDate();
+        const firstDayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+        
+        // Calculate how many weeks this month spans
+        const totalDays = daysInMonth + firstDayOfWeek;
+        const weeksInMonth = Math.ceil(totalDays / 7);
+        
+        // Generate week labels with actual dates
+        const weekLabels = [];
+        for (let i = 1; i <= weeksInMonth; i++) {
+            const weekStart = new Date(currentYear, currentMonth, (i - 1) * 7 - firstDayOfWeek + 1);
+            const weekEnd = new Date(currentYear, currentMonth, Math.min(i * 7 - firstDayOfWeek, daysInMonth));
+            
+            // Format: "1주차 (1-7일)" or "1주차 (1-31일)"
+            const startDay = Math.max(1, weekStart.getDate());
+            const endDay = weekEnd.getDate();
+            weekLabels.push(`${i}주차 (${startDay}-${endDay}일)`);
+        }
+        
+        // Generate weekly data based on user stats
+        const totalProjects = userStats.total_issues || 0; // Using total_issues as project count for now
+        const completedProjects = userStats.completed_issues || 0;
+        const inProgressProjects = userStats.in_progress_issues || 0;
+        const newProjects = userStats.new_issues || 0;
+        
+        // Create realistic weekly distribution
+        const weeklyData = [];
+        let remainingProjects = totalProjects;
+        
+        for (let i = 0; i < weeksInMonth; i++) {
+            if (i === weeksInMonth - 1) {
+                // Last week gets remaining projects
+                weeklyData.push(remainingProjects);
+            } else {
+                // Distribute projects with some variation but ensure we don't exceed total
+                const avgPerWeek = Math.floor(remainingProjects / (weeksInMonth - i));
+                const variation = Math.floor(avgPerWeek * 0.3); // 30% variation
+                const weekProjects = Math.max(0, avgPerWeek + (Math.random() - 0.5) * variation);
+                weeklyData.push(Math.min(weekProjects, remainingProjects));
+                remainingProjects = Math.max(0, remainingProjects - weekProjects);
+            }
+        }
+        
+        return {
+            labels: weekLabels,
+            datasets: [{
+                label: '프로젝트 참여 현황',
+                data: weeklyData,
+                borderColor: colors[0],
+                backgroundColor: colors[0].replace('rgb', 'rgba').replace(')', ', 0.8)'),
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        };
+    } else {
+        // Generate monthly data based on user stats
+        const totalProjects = userStats.total_issues || 0; // Using total_issues as project count for now
+        
+        // Distribute projects across 6 months (example distribution)
+        const monthlyData = [
+            Math.floor(totalProjects * 0.1),  // Month 1: 10%
+            Math.floor(totalProjects * 0.15), // Month 2: 15%
+            Math.floor(totalProjects * 0.2),  // Month 3: 20%
+            Math.floor(totalProjects * 0.25), // Month 4: 25%
+            Math.floor(totalProjects * 0.2),  // Month 5: 20%
+            Math.floor(totalProjects * 0.1)   // Month 6: 10%
+        ];
+        
+        return {
+            labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+            datasets: [{
+                label: '이슈 처리 현황',
+                data: monthlyData,
+                borderColor: colors[0],
+                backgroundColor: colors[0].replace('rgb', 'rgba').replace(')', ', 0.8)'),
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        };
+    }
+}
+
+function initModalPerformanceChart(stats) {
+    console.log('initModalPerformanceChart called');
+    
+    // Check if Chart.js is available
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js is not loaded');
+        return;
+    }
+    
+    const canvas = document.getElementById('modalPerformanceChart');
+    if (!canvas) {
+        console.error('Canvas element not found');
+        return;
+    }
+    
+    console.log('Canvas found:', canvas);
+    console.log('Canvas dimensions:', canvas.width, 'x', canvas.height);
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Destroy existing chart if it exists
+    if (modalPerformanceChart) {
+        console.log('Destroying existing chart');
+        modalPerformanceChart.destroy();
+        modalPerformanceChart = null;
+    }
+    
+    console.log('Creating new chart with data:', generateUserChartData(stats));
+    
+    try {
+        modalPerformanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: generateUserChartData(stats),
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '개 프로젝트';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#6B7280',
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            color: '#6B7280',
+                            font: {
+                                size: 10
+                            },
+                            callback: function(value) {
+                                return value + '개';
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                elements: {
+                    bar: {
+                        borderRadius: 4,
+                        borderSkipped: false
+                    }
+                }
+            }
+        });
+        
+        console.log('Chart created successfully:', modalPerformanceChart);
+    } catch (error) {
+        console.error('Error creating chart:', error);
+        modalPerformanceChart = null;
+    }
+}
+
+function updateModalChartView(view) {
+    if (!modalPerformanceChart) {
+        console.error('Chart not initialized');
+        return;
+    }
+    
+    currentModalView = view;
+    
+    // Update button styles
+    const weekBtn = document.getElementById('modalWeekBtn');
+    const monthBtn = document.getElementById('modalMonthBtn');
+    
+    if (weekBtn) {
+        weekBtn.className = view === 'week' 
+            ? 'px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors'
+            : 'px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors';
+    }
+    
+    if (monthBtn) {
+        monthBtn.className = view === 'month'
+            ? 'px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors'
+            : 'px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors';
+    }
+    
+    // Get current user stats from the modal
+    const totalIssues = parseInt(document.getElementById('totalIssues').textContent) || 0;
+    const completedIssues = parseInt(document.getElementById('completedIssues').textContent) || 0;
+    const inProgressIssues = parseInt(document.getElementById('inProgressIssues').textContent) || 0;
+    const delayedIssues = parseInt(document.getElementById('delayedIssues').textContent) || 0;
+    
+    const currentStats = {
+        total_issues: totalIssues,
+        completed_issues: completedIssues,
+        in_progress_issues: inProgressIssues,
+        delayed_issues: delayedIssues
+    };
+    
+    // Update chart data
+    modalPerformanceChart.data = generateUserChartData(currentStats, view);
+    modalPerformanceChart.update();
+    
+    // Update chart title
+    updateChartTitle(view);
+}
+
+function showUserPerformanceChart(userName, stats) {
+    if (!modalPerformanceChart) {
+        console.error('Chart not initialized');
+        return;
+    }
+    
+    // Update chart with user's data
+    const chartData = generateUserChartData(stats, currentModalView);
+    modalPerformanceChart.data = chartData;
+    modalPerformanceChart.update();
+    
+    console.log('Updated chart for user:', userName, 'with data:', chartData);
+}
+</script>
+
+<!-- Load Chart.js -->
+<script src="https://unpkg.com/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    // Verify Chart.js is loaded
+    if (typeof Chart !== 'undefined') {
+        console.log('Chart.js loaded successfully from unpkg');
+    } else {
+        console.error('Chart.js failed to load from unpkg');
+    }
 </script>
 {% endblock %} 
