@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('set-language/', views.set_language, name='set_language'),
     path('performance/', views.performance_view, name='performance'),
+    path('user-detail/<int:user_id>/', views.get_user_detail, name='user_detail'),
     path('weekly-report/', views.weekly_report_view, name='weekly_report'),
     path('weekly-report/<int:year>/<int:week>/', views.weekly_report_view, name='weekly_report_with_week'),
     path('monthly-report/', views.monthly_report_view, name='monthly_report'),

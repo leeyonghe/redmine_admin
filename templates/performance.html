@@ -150,7 +150,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-primary hover:text-blue-700">{% trans "상세보기" %}</a>
+                            <button onclick="showUserDetail({{ user.assigned_to_id }})" class="text-primary hover:text-blue-700">{% trans "상세보기" %}</button>
                         </td>
                     </tr>
                     {% empty %}
@@ -269,4 +269,225 @@
         </div>
     </div>
 </div>
+
+<!-- User Detail Modal -->
+<div id="userDetailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900" id="modalTitle">{% trans "사용자 상세 정보" %}</h3>
+                <button onclick="closeUserDetail()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Loading -->
+            <div id="loadingContent" class="text-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                <p class="mt-4 text-gray-600">{% trans "데이터를 불러오는 중..." %}</p>
+            </div>
+            
+            <!-- User Detail Content -->
+            <div id="userDetailContent" class="hidden">
+                <!-- User Info -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div class="flex items-center">
+                        <img id="userAvatar" class="h-16 w-16 rounded-full object-cover" src="{% static 'images/user.png' %}" alt="User Avatar">
+                        <div class="ml-4">
+                            <h4 id="userName" class="text-xl font-semibold text-gray-900"></h4>
+                            <p id="userLogin" class="text-gray-600"></p>
+                            <p id="userEmail" class="text-gray-600"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                        <p class="text-2xl font-bold text-blue-600" id="totalIssues">0</p>
+                        <p class="text-sm text-gray-600">{% trans "총 이슈" %}</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                        <p class="text-2xl font-bold text-green-600" id="completedIssues">0</p>
+                        <p class="text-sm text-gray-600">{% trans "완료" %}</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                        <p class="text-2xl font-bold text-blue-600" id="inProgressIssues">0</p>
+                        <p class="text-sm text-gray-600">{% trans "진행중" %}</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                        <p class="text-2xl font-bold text-red-600" id="delayedIssues">0</p>
+                        <p class="text-sm text-gray-600">{% trans "지연" %}</p>
+                    </div>
+                </div>
+                
+                <!-- Completion Rate -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+                    <h5 class="font-medium text-gray-900 mb-2">{% trans "완료율" %}</h5>
+                    <div class="flex items-center">
+                        <div class="flex-1 bg-gray-200 rounded-full h-3 mr-3">
+                            <div id="completionBar" class="bg-green-600 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span id="completionRate" class="text-lg font-semibold text-gray-900">0%</span>
+                    </div>
+                </div>
+                
+                <!-- Recent Issues -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+                    <h5 class="font-medium text-gray-900 mb-4">{% trans "최근 이슈" %}</h5>
+                    <div id="recentIssuesList" class="space-y-3">
+                        <!-- Recent issues will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Project Distribution -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h5 class="font-medium text-gray-900 mb-4">{% trans "프로젝트별 이슈 분포" %}</h5>
+                    <div id="projectDistribution" class="space-y-3">
+                        <!-- Project distribution will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showUserDetail(userId) {
+    // Show modal and loading
+    document.getElementById('userDetailModal').classList.remove('hidden');
+    document.getElementById('loadingContent').classList.remove('hidden');
+    document.getElementById('userDetailContent').classList.add('hidden');
+    
+    // Get CSRF token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    // Fetch user detail data
+    fetch(`/user-detail/${userId}/`, {
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error: ' + data.error);
+                return;
+            }
+            
+            // Populate user info
+            document.getElementById('userName').textContent = data.user.firstname + ' ' + data.user.lastname;
+            document.getElementById('userLogin').textContent = data.user.login;
+            document.getElementById('userEmail').textContent = data.user.email || 'N/A';
+            
+            if (data.user.avatar_path) {
+                document.getElementById('userAvatar').src = data.user.avatar_path;
+            }
+            
+            // Populate stats
+            document.getElementById('totalIssues').textContent = data.stats.total_issues;
+            document.getElementById('completedIssues').textContent = data.stats.completed_issues;
+            document.getElementById('inProgressIssues').textContent = data.stats.in_progress_issues;
+            document.getElementById('delayedIssues').textContent = data.stats.delayed_issues;
+            
+            // Update completion rate
+            const completionRate = data.stats.completion_rate;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+            document.getElementById('completionBar').style.width = completionRate + '%';
+            
+            // Populate recent issues
+            const recentIssuesList = document.getElementById('recentIssuesList');
+            recentIssuesList.innerHTML = '';
+            
+            if (data.recent_issues.length === 0) {
+                recentIssuesList.innerHTML = '<p class="text-gray-500 text-center py-4">{% trans "최근 이슈가 없습니다." %}</p>';
+            } else {
+                data.recent_issues.forEach(issue => {
+                    const priorityColors = {
+                        1: 'text-gray-500',
+                        2: 'text-blue-500',
+                        3: 'text-orange-500',
+                        4: 'text-red-500',
+                        5: 'text-purple-500'
+                    };
+                    
+                    const priorityLabels = {
+                        1: '{% trans "낮음" %}',
+                        2: '{% trans "보통" %}',
+                        3: '{% trans "높음" %}',
+                        4: '{% trans "긴급" %}',
+                        5: '{% trans "즉시" %}'
+                    };
+                    
+                    const issueElement = document.createElement('div');
+                    issueElement.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+                    issueElement.innerHTML = `
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-900">${issue.subject}</p>
+                            <p class="text-sm text-gray-600">${issue.project__name} • ${issue.status__name}</p>
+                        </div>
+                        <span class="text-xs font-medium ${priorityColors[issue.priority_id] || 'text-gray-500'}">
+                            ${priorityLabels[issue.priority_id] || '{% trans "기타" %}'}
+                        </span>
+                    `;
+                    recentIssuesList.appendChild(issueElement);
+                });
+            }
+            
+            // Populate project distribution
+            const projectDistribution = document.getElementById('projectDistribution');
+            projectDistribution.innerHTML = '';
+            
+            if (data.project_distribution.length === 0) {
+                projectDistribution.innerHTML = '<p class="text-gray-500 text-center py-4">{% trans "프로젝트 데이터가 없습니다." %}</p>';
+            } else {
+                data.project_distribution.forEach(project => {
+                    const projectElement = document.createElement('div');
+                    projectElement.className = 'flex items-center justify-between';
+                    projectElement.innerHTML = `
+                        <span class="text-sm text-gray-600">${project.project__name}</span>
+                        <div class="flex items-center">
+                            <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${(project.count / data.stats.total_issues * 100).toFixed(1)}%"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">${project.count}</span>
+                        </div>
+                    `;
+                    projectDistribution.appendChild(projectElement);
+                });
+            }
+            
+            // Hide loading and show content
+            document.getElementById('loadingContent').classList.add('hidden');
+            document.getElementById('userDetailContent').classList.remove('hidden');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('{% trans "데이터를 불러오는 중 오류가 발생했습니다." %}');
+            closeUserDetail();
+        });
+}
+
+function closeUserDetail() {
+    document.getElementById('userDetailModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('userDetailModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeUserDetail();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeUserDetail();
+    }
+});
+</script>
 {% endblock %} 

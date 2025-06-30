@@ -506,4 +506,103 @@ def get_user_avatar_path(user_id):
         else:
             return None
     except Exception:
-        return None 
+        return None
+
+@login_required
+def get_user_detail(request, user_id):
+    """사용자 상세 정보를 AJAX로 반환"""
+    try:
+        # 사용자 정보 가져오기
+        redmine_user = RedmineUser.objects.get(id=user_id)
+        
+        # 사용자의 이슈 통계
+        user_issues = Issue.objects.filter(assigned_to_id=user_id)
+        total_issues = user_issues.count()
+        completed_issues = user_issues.filter(status_id=5).count()
+        in_progress_issues = user_issues.filter(status_id=2).count()
+        new_issues = user_issues.filter(status_id=1).count()
+        delayed_issues = user_issues.filter(due_date__lt=timezone.now().date(), status_id__in=[1,2]).count()
+        
+        # 최근 이슈 5개 - status_id를 사용하여 조인
+        recent_issues = user_issues.select_related('project').order_by('-created_on')[:5]
+        
+        # 프로젝트별 이슈 분포
+        project_distribution = user_issues.values('project__name').annotate(
+            count=Count('id')
+        ).order_by('-count')[:5]
+        
+        # 월별 완료 이슈 통계 (최근 6개월)
+        six_months_ago = timezone.now() - timedelta(days=180)
+        monthly_completed = user_issues.filter(
+            status_id=5,
+            closed_on__gte=six_months_ago
+        ).extra(
+            select={'month': "DATE_FORMAT(closed_on, '%%Y-%%m')"}
+        ).values('month').annotate(
+            count=Count('id')
+        ).order_by('month')
+        
+        # 아바타 경로
+        avatar_path = None
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SHOW TABLES LIKE 'users_avatar'")
+                table_exists = cursor.fetchone()
+            
+            if table_exists:
+                avatar = RedmineUserAvatar.objects.get(user_id=user_id)
+                avatar_path = avatar.avatar_path
+        except Exception:
+            pass
+        
+        # 최근 이슈 데이터 준비 (status_id를 기반으로 상태명 매핑)
+        status_names = {
+            1: '신규',
+            2: '진행중', 
+            3: '해결됨',
+            4: '피드백',
+            5: '종료',
+            6: '거부됨'
+        }
+        
+        recent_issues_data = []
+        for issue in recent_issues:
+            recent_issues_data.append({
+                'id': issue.id,
+                'subject': issue.subject,
+                'project__name': issue.project.name,
+                'status__name': status_names.get(issue.status_id, '기타'),
+                'priority_id': issue.priority_id,
+                'created_on': issue.created_on.isoformat() if issue.created_on else None
+            })
+        
+        context = {
+            'user': {
+                'id': redmine_user.id,
+                'login': redmine_user.login,
+                'firstname': redmine_user.firstname,
+                'lastname': redmine_user.lastname,
+                # 'email': redmine_user.mail,
+                'created_on': redmine_user.created_on,
+                'last_login_on': redmine_user.last_login_on,
+                'avatar_path': avatar_path,
+            },
+            'stats': {
+                'total_issues': total_issues,
+                'completed_issues': completed_issues,
+                'in_progress_issues': in_progress_issues,
+                'new_issues': new_issues,
+                'delayed_issues': delayed_issues,
+                'completion_rate': round((completed_issues / total_issues * 100) if total_issues > 0 else 0, 1)
+            },
+            'recent_issues': recent_issues_data,
+            'project_distribution': list(project_distribution),
+            'monthly_completed': list(monthly_completed)
+        }
+        
+        return JsonResponse(context)
+        
+    except RedmineUser.DoesNotExist:
+        return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500) 
