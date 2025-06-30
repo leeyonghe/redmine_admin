@@ -158,4 +158,140 @@ msgstr "지표"
 
 #: templates/yearly_report.html:127
 msgid "증감률"
-msgstr "증감률" 
+msgstr "증감률"
+
+#: templates/project_management.html:4
+msgid "프로젝트별관리 - Redmine Admin"
+msgstr "프로젝트별관리 - Redmine Admin"
+
+#: templates/project_management.html:11
+msgid "프로젝트별관리"
+msgstr "프로젝트별관리"
+
+#: templates/project_management.html:12
+msgid "프로젝트별 이슈 현황과 성과를 관리하세요"
+msgstr "프로젝트별 이슈 현황과 성과를 관리하세요"
+
+#: templates/project_management.html:16
+msgid "프로젝트 추가"
+msgstr "프로젝트 추가"
+
+#: templates/project_management.html:19
+msgid "보고서 다운로드"
+msgstr "보고서 다운로드"
+
+#: templates/project_management.html:34
+msgid "총 프로젝트"
+msgstr "총 프로젝트"
+
+#: templates/project_management.html:48
+msgid "지연된 프로젝트"
+msgstr "지연된 프로젝트"
+
+#: templates/project_management.html:76
+msgid "참여 팀원"
+msgstr "참여 팀원"
+
+#: templates/project_management.html:87
+msgid "프로젝트 목록"
+msgstr "프로젝트 목록"
+
+#: templates/project_management.html:90
+msgid "전체 상태"
+msgstr "전체 상태"
+
+#: templates/project_management.html:91
+msgid "완료"
+msgstr "완료"
+
+#: templates/project_management.html:92
+msgid "지연"
+msgstr "지연"
+
+#: templates/project_management.html:95
+msgid "프로젝트 검색..."
+msgstr "프로젝트 검색..."
+
+#: templates/project_management.html:103
+msgid "프로젝트명"
+msgstr "프로젝트명"
+
+#: templates/project_management.html:104
+msgid "상태"
+msgstr "상태"
+
+#: templates/project_management.html:105
+msgid "진행률"
+msgstr "진행률"
+
+#: templates/project_management.html:106
+msgid "담당자"
+msgstr "담당자"
+
+#: templates/project_management.html:107
+msgid "마감일"
+msgstr "마감일"
+
+#: templates/project_management.html:108
+msgid "액션"
+msgstr "액션"
+
+#: templates/project_management.html:130
+msgid "대기"
+msgstr "대기"
+
+#: templates/project_management.html:166
+msgid "상세보기"
+msgstr "상세보기"
+
+#: templates/project_management.html:167
+msgid "편집"
+msgstr "편집"
+
+#: templates/project_management.html:173
+msgid "프로젝트가 없습니다."
+msgstr "프로젝트가 없습니다."
+
+#: templates/project_management.html:185
+msgid "프로젝트별 성과 현황"
+msgstr "프로젝트별 성과 현황"
+
+#: templates/project_management.html:187
+msgid "주간"
+msgstr "주간"
+
+#: templates/project_management.html:188
+msgid "월간"
+msgstr "월간"
+
+#: templates/project_management.html:203
+msgid "프로젝트 상세 정보"
+msgstr "프로젝트 상세 정보"
+
+#: templates/project_management.html:214
+msgid "데이터를 불러오는 중..."
+msgstr "데이터를 불러오는 중..."
+
+#: templates/project_management.html:263
+msgid "팀 멤버"
+msgstr "팀 멤버"
+
+#: templates/project_management.html:320
+msgid "팀 멤버가 없습니다."
+msgstr "팀 멤버가 없습니다."
+
+#: templates/project_management.html:345
+msgid "데이터를 불러오는 중 오류가 발생했습니다."
+msgstr "데이터를 불러오는 중 오류가 발생했습니다."
+
+#: templates/performance.html:34
+msgid "총 팀원"
+msgstr "총 팀원"
+
+#: templates/performance.html:62
+msgid "완료된 이슈"
+msgstr "완료된 이슈"
+
+#: templates/performance.html:90
+msgid "지연된 이슈"
+msgstr "지연된 이슈" 

@@ -158,4 +158,140 @@ msgstr "指標"
 
 #: templates/yearly_report.html:127
 msgid "증감률"
-msgstr "増減率" 
+msgstr "増減率"
+
+#: templates/project_management.html:4
+msgid "프로젝트별관리 - Redmine Admin"
+msgstr "プロジェクト管理 - Redmine Admin"
+
+#: templates/project_management.html:11
+msgid "프로젝트별관리"
+msgstr "プロジェクト管理"
+
+#: templates/project_management.html:12
+msgid "프로젝트별 이슈 현황과 성과를 관리하세요"
+msgstr "プロジェクト別課題現状と業績を管理してください"
+
+#: templates/project_management.html:16
+msgid "프로젝트 추가"
+msgstr "プロジェクト追加"
+
+#: templates/project_management.html:19
+msgid "보고서 다운로드"
+msgstr "レポートダウンロード"
+
+#: templates/project_management.html:34
+msgid "총 프로젝트"
+msgstr "総プロジェクト"
+
+#: templates/project_management.html:48
+msgid "지연된 프로젝트"
+msgstr "遅延プロジェクト"
+
+#: templates/project_management.html:76
+msgid "참여 팀원"
+msgstr "参加チームメンバー"
+
+#: templates/project_management.html:87
+msgid "프로젝트 목록"
+msgstr "プロジェクト一覧"
+
+#: templates/project_management.html:90
+msgid "전체 상태"
+msgstr "全状態"
+
+#: templates/project_management.html:91
+msgid "완료"
+msgstr "完了"
+
+#: templates/project_management.html:92
+msgid "지연"
+msgstr "遅延"
+
+#: templates/project_management.html:95
+msgid "프로젝트 검색..."
+msgstr "プロジェクト検索..."
+
+#: templates/project_management.html:103
+msgid "프로젝트명"
+msgstr "プロジェクト名"
+
+#: templates/project_management.html:104
+msgid "상태"
+msgstr "状態"
+
+#: templates/project_management.html:105
+msgid "진행률"
+msgstr "進捗率"
+
+#: templates/project_management.html:106
+msgid "담당자"
+msgstr "担当者"
+
+#: templates/project_management.html:107
+msgid "마감일"
+msgstr "期限"
+
+#: templates/project_management.html:108
+msgid "액션"
+msgstr "アクション"
+
+#: templates/project_management.html:130
+msgid "대기"
+msgstr "待機"
+
+#: templates/project_management.html:166
+msgid "상세보기"
+msgstr "詳細表示"
+
+#: templates/project_management.html:167
+msgid "편집"
+msgstr "編集"
+
+#: templates/project_management.html:173
+msgid "프로젝트가 없습니다."
+msgstr "プロジェクトがありません。"
+
+#: templates/project_management.html:185
+msgid "프로젝트별 성과 현황"
+msgstr "プロジェクト別業績現状"
+
+#: templates/project_management.html:187
+msgid "주간"
+msgstr "週間"
+
+#: templates/project_management.html:188
+msgid "월간"
+msgstr "月間"
+
+#: templates/project_management.html:203
+msgid "프로젝트 상세 정보"
+msgstr "プロジェクト詳細情報"
+
+#: templates/project_management.html:214
+msgid "데이터를 불러오는 중..."
+msgstr "データを読み込み中..."
+
+#: templates/project_management.html:263
+msgid "팀 멤버"
+msgstr "チームメンバー"
+
+#: templates/project_management.html:320
+msgid "팀 멤버가 없습니다."
+msgstr "チームメンバーがありません。"
+
+#: templates/project_management.html:345
+msgid "데이터를 불러오는 중 오류가 발생했습니다."
+msgstr "データ読み込み中にエラーが発生しました。"
+
+#: templates/performance.html:34
+msgid "총 팀원"
+msgstr "総チームメンバー"
+
+#: templates/performance.html:62
+msgid "완료된 이슈"
+msgstr "完了した課題"
+
+#: templates/performance.html:90
+msgid "지연된 이슈"
+msgstr "遅延した課題" 

@@ -158,4 +158,140 @@ msgstr "Indicator"
 
 #: templates/yearly_report.html:127
 msgid "증감률"
-msgstr "Change Rate" 
+msgstr "Change Rate"
+
+#: templates/project_management.html:4
+msgid "프로젝트별관리 - Redmine Admin"
+msgstr "Project Management - Redmine Admin"
+
+#: templates/project_management.html:11
+msgid "프로젝트별관리"
+msgstr "Project Management"
+
+#: templates/project_management.html:12
+msgid "프로젝트별 이슈 현황과 성과를 관리하세요"
+msgstr "Manage project issue status and performance"
+
+#: templates/project_management.html:16
+msgid "프로젝트 추가"
+msgstr "Add Project"
+
+#: templates/project_management.html:19
+msgid "보고서 다운로드"
+msgstr "Download Report"
+
+#: templates/project_management.html:34
+msgid "총 프로젝트"
+msgstr "Total Projects"
+
+#: templates/project_management.html:48
+msgid "지연된 프로젝트"
+msgstr "Delayed Projects"
+
+#: templates/project_management.html:76
+msgid "참여 팀원"
+msgstr "Team Members"
+
+#: templates/project_management.html:87
+msgid "프로젝트 목록"
+msgstr "Project List"
+
+#: templates/project_management.html:90
+msgid "전체 상태"
+msgstr "All Status"
+
+#: templates/project_management.html:91
+msgid "완료"
+msgstr "Completed"
+
+#: templates/project_management.html:92
+msgid "지연"
+msgstr "Delayed"
+
+#: templates/project_management.html:103
+msgid "프로젝트명"
+msgstr "Project Name"
+
+#: templates/project_management.html:104
+msgid "상태"
+msgstr "Status"
+
+#: templates/project_management.html:105
+msgid "진행률"
+msgstr "Progress"
+
+#: templates/project_management.html:106
+msgid "담당자"
+msgstr "Manager"
+
+#: templates/project_management.html:107
+msgid "마감일"
+msgstr "Due Date"
+
+#: templates/project_management.html:108
+msgid "액션"
+msgstr "Action"
+
+#: templates/project_management.html:130
+msgid "대기"
+msgstr "Waiting"
+
+#: templates/project_management.html:166
+msgid "상세보기"
+msgstr "View Details"
+
+#: templates/project_management.html:167
+msgid "편집"
+msgstr "Edit"
+
+#: templates/project_management.html:173
+msgid "프로젝트가 없습니다."
+msgstr "No projects available."
+
+#: templates/project_management.html:185
+msgid "프로젝트별 성과 현황"
+msgstr "Project Performance Status"
+
+#: templates/project_management.html:187
+msgid "주간"
+msgstr "Weekly"
+
+#: templates/project_management.html:188
+msgid "월간"
+msgstr "Monthly"
+
+#: templates/project_management.html:203
+msgid "프로젝트 상세 정보"
+msgstr "Project Details"
+
+#: templates/project_management.html:214
+msgid "데이터를 불러오는 중..."
+msgstr "Loading data..."
+
+#: templates/project_management.html:263
+msgid "팀 멤버"
+msgstr "Team Members"
+
+#: templates/project_management.html:320
+msgid "팀 멤버가 없습니다."
+msgstr "No team members."
+
+#: templates/project_management.html:345
+msgid "데이터를 불러오는 중 오류가 발생했습니다."
+msgstr "An error occurred while loading data."
+
+#: templates/project_management.html:95
+msgid "프로젝트 검색..."
+msgstr "Search projects..."
+
+#: templates/performance.html:34
+msgid "총 팀원"
+msgstr "Total Team Members"
+
+#: templates/performance.html:62
+msgid "완료된 이슈"
+msgstr "Completed Issues"
+
+#: templates/performance.html:90
+msgid "지연된 이슈"
+msgstr "Delayed Issues" 
