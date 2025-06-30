@@ -212,6 +212,86 @@ def performance_view(request):
         return HttpResponse(f"Error: {str(e)}")
 
 @login_required
+def project_management_view(request):
+    try:
+        print("project_management_view start")
+        
+        # 프로젝트 통계
+        total_projects = Project.objects.count()
+        active_projects = Project.objects.filter(status=1).count()  # 활성 프로젝트
+        delayed_projects = Project.objects.filter(
+            Q(created_on__lt=timezone.now() - timedelta(days=30)) &  # 30일 이상 된 프로젝트
+            Q(status=1)  # 아직 활성 상태
+        ).count()
+        total_team_members = RedmineUser.objects.filter(status=1).count()
+        
+        # 프로젝트 목록 (샘플 데이터)
+        projects = []
+        for project in Project.objects.all()[:10]:  # 최대 10개 프로젝트
+            # 프로젝트별 이슈 통계
+            project_issues = Issue.objects.filter(project=project)
+            total_issues = project_issues.count()
+            completed_issues = project_issues.filter(status_id=5).count()
+            
+            # 진행률 계산
+            progress = 0
+            if total_issues > 0:
+                progress = round((completed_issues / total_issues) * 100)
+            
+            # 프로젝트 상태 결정
+            if progress >= 100:
+                status = 'completed'
+            elif progress >= 50:
+                status = 'active'
+            elif project.created_on < timezone.now() - timedelta(days=30):
+                status = 'delayed'
+            else:
+                status = 'waiting'
+            
+            # 담당자 정보 (첫 번째 이슈의 담당자)
+            manager = "미지정"
+            first_issue = project_issues.filter(assigned_to_id__isnull=False).first()
+            if first_issue:
+                try:
+                    redmine_user = RedmineUser.objects.get(id=first_issue.assigned_to_id)
+                    manager = f"{redmine_user.firstname} {redmine_user.lastname}"
+                except RedmineUser.DoesNotExist:
+                    pass
+            
+            projects.append({
+                'id': project.id,
+                'name': project.name,
+                'description': project.description or "설명 없음",
+                'status': status,
+                'progress': progress,
+                'manager': manager,
+                'due_date': project.created_on + timedelta(days=90),  # 샘플 마감일
+                'total_issues': total_issues,
+                'completed_issues': completed_issues
+            })
+        
+        context = {
+            'total_projects': total_projects,
+            'active_projects': active_projects,
+            'delayed_projects': delayed_projects,
+            'total_team_members': total_team_members,
+            'projects': projects,
+        }
+        
+        return render(request, 'project_management.html', context)
+        
+    except Exception as e:
+        print(f"Error in project_management_view: {e}")
+        context = {
+            'total_projects': 0,
+            'active_projects': 0,
+            'delayed_projects': 0,
+            'total_team_members': 0,
+            'projects': [],
+        }
+        return render(request, 'project_management.html', context)
+
+@login_required
 def weekly_report_view(request, year=None, week=None):
     # 주차 파라미터가 없으면 현재 주 사용
     if year is None or week is None:
@@ -605,4 +685,141 @@ def get_user_detail(request, user_id):
     except RedmineUser.DoesNotExist:
         return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500) 
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def get_project_detail(request, project_id):
+    """프로젝트 상세 정보를 JSON으로 반환"""
+    try:
+        # 프로젝트 정보 가져오기
+        project = Project.objects.get(id=project_id)
+        
+        # 프로젝트 이슈 통계
+        project_issues = Issue.objects.filter(project=project)
+        total_issues = project_issues.count()
+        completed_issues = project_issues.filter(status_id=5).count()
+        in_progress_issues = project_issues.filter(status_id=2).count()
+        new_issues = project_issues.filter(status_id=1).count()
+        delayed_issues = project_issues.filter(
+            due_date__lt=timezone.now().date(), 
+            status_id__in=[1, 2]
+        ).count()
+        
+        # 진행률 계산
+        progress_rate = 0
+        if total_issues > 0:
+            progress_rate = round((completed_issues / total_issues) * 100)
+        
+        # 프로젝트 상태 결정
+        if progress_rate >= 100:
+            status = 'completed'
+        elif progress_rate >= 50:
+            status = 'active'
+        elif project.created_on < timezone.now() - timedelta(days=30):
+            status = 'delayed'
+        else:
+            status = 'waiting'
+        
+        # 담당자 정보 (첫 번째 이슈의 담당자)
+        manager = "미지정"
+        first_issue = project_issues.filter(assigned_to_id__isnull=False).first()
+        if first_issue:
+            try:
+                redmine_user = RedmineUser.objects.get(id=first_issue.assigned_to_id)
+                manager = f"{redmine_user.firstname} {redmine_user.lastname}"
+            except RedmineUser.DoesNotExist:
+                pass
+        
+        # 팀 멤버 정보 (프로젝트에 이슈가 할당된 사용자들)
+        team_members = []
+        assigned_users = project_issues.values('assigned_to_id').distinct()
+        
+        for user_data in assigned_users:
+            if user_data['assigned_to_id']:
+                try:
+                    user = RedmineUser.objects.get(id=user_data['assigned_to_id'])
+                    user_issues = project_issues.filter(assigned_to_id=user.id)
+                    user_completed = user_issues.filter(status_id=5).count()
+                    user_total = user_issues.count()
+                    
+                    team_members.append({
+                        'id': user.id,
+                        'name': f"{user.firstname} {user.lastname}",
+                        'login': user.login,
+                        # 'email': user.mail,
+                        'role': '개발자',  # 기본 역할
+                        'status': '활성',
+                        'total_issues': user_total,
+                        'completed_issues': user_completed,
+                        'completion_rate': round((user_completed / user_total * 100) if user_total > 0 else 0, 1)
+                    })
+                except RedmineUser.DoesNotExist:
+                    continue
+        
+        # 최근 이슈 (최근 5개)
+        recent_issues = project_issues.order_by('-created_on')[:5]
+        recent_issues_data = []
+        
+        # 상태명 매핑
+        status_names = {
+            1: '신규',
+            2: '진행중', 
+            3: '해결됨',
+            4: '피드백',
+            5: '종료',
+            6: '거부됨'
+        }
+        
+        for issue in recent_issues:
+            # 담당자 정보 안전하게 처리
+            assigned_to_name = '미지정'
+            if issue.assigned_to_id:
+                try:
+                    assigned_user = RedmineUser.objects.get(id=issue.assigned_to_id)
+                    assigned_to_name = f"{assigned_user.firstname} {assigned_user.lastname}"
+                except RedmineUser.DoesNotExist:
+                    pass
+            
+            recent_issues_data.append({
+                'id': issue.id,
+                'subject': issue.subject,
+                'status': status_names.get(issue.status_id, 'Unknown'),
+                'priority_id': issue.priority_id,
+                'created_on': issue.created_on.strftime('%Y-%m-%d'),
+                'assigned_to': assigned_to_name
+            })
+        
+        # 프로젝트 정보
+        project_data = {
+            'id': project.id,
+            'name': project.name,
+            'description': project.description or "설명 없음",
+            'status': status,
+            'manager': manager,
+            'created_on': project.created_on.strftime('%Y-%m-%d'),
+            'due_date': (project.created_on + timedelta(days=90)).strftime('%Y-%m-%d'),  # 샘플 마감일
+            'progress_rate': progress_rate
+        }
+        
+        # 통계 정보
+        stats = {
+            'total_issues': total_issues,
+            'completed_issues': completed_issues,
+            'in_progress_issues': in_progress_issues,
+            'new_issues': new_issues,
+            'delayed_issues': delayed_issues,
+            'progress_rate': progress_rate
+        }
+        
+        return JsonResponse({
+            'project': project_data,
+            'stats': stats,
+            'team_members': team_members,
+            'recent_issues': recent_issues_data
+        })
+        
+    except Project.DoesNotExist:
+        return JsonResponse({'error': '프로젝트를 찾을 수 없습니다.'}, status=404)
+    except Exception as e:
+        print(f"Error in get_project_detail: {e}")
+        return JsonResponse({'error': '프로젝트 정보를 가져오는 중 오류가 발생했습니다.'}, status=500) 
