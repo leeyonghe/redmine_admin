@@ -133,6 +133,11 @@
                         
                         <!-- Language Selector -->
                         <div class="relative">
+                            <!-- <div class="text-xs text-gray-500 mb-1">
+                                Current: {{ LANGUAGE_CODE|default:"ko" }}
+                                <br>
+                                <small>Debug: {{ LANGUAGE_CODE|length }} chars</small>
+                            </div> -->
                             <select id="language-selector" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                 <option value="ko" {% if LANGUAGE_CODE == 'ko' %}selected{% endif %}>한국어</option>
                                 <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
@@ -163,8 +168,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             const languageSelector = document.getElementById('language-selector');
             if (languageSelector) {
+                console.log('Language selector found:', languageSelector.value);  // 디버깅용
+                
                 languageSelector.addEventListener('change', function() {
                     const selectedLanguage = this.value;
+                    console.log('Language changed to:', selectedLanguage);  // 디버깅용
                     
                     fetch('{% url "redmine:set_language" %}', {
                         method: 'POST',
@@ -176,14 +184,20 @@
                     })
                     .then(response => response.json())
                     .then(data => {
+                        console.log('Response:', data);  // 디버깅용
                         if (data.status === 'success') {
-                            location.reload();
+                            console.log('Language change successful, reloading...');  // 디버깅용
+                            window.location.reload();
+                        } else {
+                            console.error('Language change failed');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                     });
                 });
+            } else {
+                console.log('Language selector not found');  // 디버깅용
             }
         });
     </script>

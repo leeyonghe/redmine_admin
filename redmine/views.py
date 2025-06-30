@@ -21,12 +21,29 @@ def set_language(request):
     """언어 변경 뷰"""
     if request.method == 'POST':
         language = request.POST.get('language')
+        print(f"Setting language to: {language}")  # 디버깅용
+        
         if language in [lang[0] for lang in settings.LANGUAGES]:
-            activate(language)
+            # 세션에 언어 설정 저장
+            request.session[settings.LANGUAGE_COOKIE_NAME] = language
+            print(f"Language saved to session: {request.session[settings.LANGUAGE_COOKIE_NAME]}")  # 디버깅용
+            
+            # 쿠키에도 설정
             response = JsonResponse({'status': 'success'})
             response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
             return response
     return JsonResponse({'status': 'error'})
+
+def get_current_language(request):
+    """현재 언어를 가져오는 헬퍼 함수"""
+    # 세션에서 언어 가져오기
+    session_language = request.session.get(settings.LANGUAGE_COOKIE_NAME)
+    # 쿠키에서 언어 가져오기
+    cookie_language = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+    # 현재 언어 결정
+    current_language = session_language or cookie_language or settings.LANGUAGE_CODE
+    print(f"Current language: {current_language}")  # 디버깅용
+    return current_language
 
 @login_required
 def index(request):
@@ -49,6 +66,9 @@ def index(request):
 
     print("index")
     
+    # 현재 언어 가져오기
+    current_language = get_current_language(request)
+    
     context = {
         'total_projects': total_projects,
         'total_issues': total_issues,
@@ -56,8 +76,10 @@ def index(request):
         'active_users': active_users,
         'recent_issues': recent_issues,
         'project_stats': project_stats,
+        'LANGUAGE_CODE': current_language,  # 언어 정보 추가
     }
 
+    print(f"Context LANGUAGE_CODE: {context['LANGUAGE_CODE']}")  # 디버깅용
     print("index")
     
     return render(request, 'dashboard.html', context)
