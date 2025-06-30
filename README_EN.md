@@ -1,6 +1,6 @@
 # Redmine Admin
 
-[한국어](README.md) | [English]
+[한국어](README.md) | [English] | [Japanese](README_JP.md) | [Chinese](README_ZH.md)
 
 Redmine Admin is a Django-based web application for analyzing and managing data from the Redmine project management system. It visualizes data such as projects, issues, time entries, and provides comprehensive performance analytics with advanced reporting capabilities.
 
