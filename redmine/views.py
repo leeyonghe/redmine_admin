@@ -53,6 +53,28 @@ def index(request):
     total_issues = Issue.objects.count()
     completed_issues = Issue.objects.filter(status_id=5).count()  # 종료된 이슈
     active_users = RedmineUser.objects.filter(status=1).count()
+    
+    # 증감률 계산
+    # 지난 달 대비 프로젝트 증감률
+    last_month = timezone.now() - timedelta(days=30)
+    last_month_projects = Project.objects.filter(created_on__lt=last_month).count()
+    project_growth_rate = ((total_projects - last_month_projects) / last_month_projects * 100) if last_month_projects > 0 else 0
+    
+    # 지난 주 대비 완료된 작업 증감률
+    last_week = timezone.now() - timedelta(days=7)
+    last_week_completed = Issue.objects.filter(status_id=5, closed_on__lt=last_week).count()
+    current_week_completed = Issue.objects.filter(status_id=5, closed_on__gte=last_week).count()
+    completed_growth_rate = ((current_week_completed - last_week_completed) / last_week_completed * 100) if last_week_completed > 0 else 0
+    
+    # 지난 주 대비 총 이슈 증감률
+    last_week_total = Issue.objects.filter(created_on__lt=last_week).count()
+    current_week_total = Issue.objects.filter(created_on__gte=last_week).count()
+    total_issues_growth_rate = ((current_week_total - last_week_total) / last_week_total * 100) if last_week_total > 0 else 0
+    
+    # 지난 달 대비 활성 사용자 증감률
+    last_month_users = RedmineUser.objects.filter(status=1, created_on__lt=last_month).count()
+    user_growth_rate = ((active_users - last_month_users) / last_month_users * 100) if last_month_users > 0 else 0
+    
     print("index")
     
     # 최근 활동
@@ -77,6 +99,10 @@ def index(request):
         'recent_issues': recent_issues,
         'project_stats': project_stats,
         'LANGUAGE_CODE': current_language,  # 언어 정보 추가
+        'project_growth_rate': round(project_growth_rate, 1),
+        'completed_growth_rate': round(completed_growth_rate, 1),
+        'total_issues_growth_rate': round(total_issues_growth_rate, 1),
+        'user_growth_rate': round(user_growth_rate, 1),
     }
 
     print(f"Context LANGUAGE_CODE: {context['LANGUAGE_CODE']}")  # 디버깅용
