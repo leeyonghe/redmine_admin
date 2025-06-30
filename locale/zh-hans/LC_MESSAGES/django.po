@@ -294,4 +294,84 @@ msgstr "已完成问题"
 
 #: templates/performance.html:90
 msgid "지연된 이슈"
-msgstr "延迟问题" 
+msgstr "延迟问题"
+
+#: templates/performance.html:101
+msgid "팀원별 이슈 처리 현황"
+msgstr "团队成员问题处理状况"
+
+#: templates/performance.html:12
+msgid "팀원들의 이슈 처리 성과를 추적하고 관리하세요"
+msgstr "跟踪和管理团队成员的问题处理绩效"
+
+#: templates/performance.html:105
+msgid "팀원"
+msgstr "团队成员"
+
+#: templates/performance.html:108
+msgid "진행중"
+msgstr "进行中"
+
+#: templates/performance.html:109
+msgid "신규"
+msgstr "新建"
+
+#: templates/performance.html:111
+msgid "완료율"
+msgstr "完成率"
+
+#: templates/weekly_report.html:11
+msgid "이번 주 프로젝트 진행 상황을 확인하세요"
+msgstr "查看本周项目进展情况"
+
+#: templates/weekly_report.html:15
+msgid "주간 선택"
+msgstr "周选择"
+
+#: templates/weekly_report.html:25
+msgid "총 작업"
+msgstr "总工作"
+
+#: templates/weekly_report.html:35
+msgid "피드백"
+msgstr "反馈"
+
+#: templates/weekly_report.html:45
+msgid "거부됨"
+msgstr "已拒绝"
+
+#: templates/weekly_report.html:55
+msgid "멤버별 이슈 상태"
+msgstr "成员问题状态"
+
+#: templates/weekly_report.html:65
+msgid "주간 작업 현황"
+msgstr "周工作状况"
+
+#: templates/weekly_report.html:75
+msgid "프로젝트"
+msgstr "项目"
+
+#: templates/weekly_report.html:85
+msgid "작업명"
+msgstr "工作名称"
+
+#: templates/weekly_report.html:242
+msgid "이 주에 생성된 이슈가 없습니다."
+msgstr "本周没有创建的问题。"
+
+#: templates/weekly_report.html:252
+msgid "이 주에 할당된 이슈가 없습니다."
+msgstr "本周没有分配的问题。"
+
+#: templates/monthly_report.html:11
+msgid "이번 달 프로젝트 성과를 종합적으로 확인하세요"
+msgstr "全面查看本月项目绩效"
+
+#: templates/monthly_report.html:26
+msgid "월간 선택"
+msgstr "月选择"
+
+#: templates/weekly_report.html:33
+msgid "주차"
+msgstr "周" 

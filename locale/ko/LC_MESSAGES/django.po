@@ -294,4 +294,84 @@ msgstr "완료된 이슈"
 
 #: templates/performance.html:90
 msgid "지연된 이슈"
-msgstr "지연된 이슈" 
+msgstr "지연된 이슈"
+
+#: templates/performance.html:101
+msgid "팀원별 이슈 처리 현황"
+msgstr "팀원별 이슈 처리 현황"
+
+#: templates/performance.html:12
+msgid "팀원들의 이슈 처리 성과를 추적하고 관리하세요"
+msgstr "팀원들의 이슈 처리 성과를 추적하고 관리하세요"
+
+#: templates/performance.html:105
+msgid "팀원"
+msgstr "팀원"
+
+#: templates/performance.html:108
+msgid "진행중"
+msgstr "진행중"
+
+#: templates/performance.html:109
+msgid "신규"
+msgstr "신규"
+
+#: templates/performance.html:111
+msgid "완료율"
+msgstr "완료율"
+
+#: templates/weekly_report.html:11
+msgid "이번 주 프로젝트 진행 상황을 확인하세요"
+msgstr "이번 주 프로젝트 진행 상황을 확인하세요"
+
+#: templates/weekly_report.html:15
+msgid "주간 선택"
+msgstr "주간 선택"
+
+#: templates/weekly_report.html:25
+msgid "총 작업"
+msgstr "총 작업"
+
+#: templates/weekly_report.html:35
+msgid "피드백"
+msgstr "피드백"
+
+#: templates/weekly_report.html:45
+msgid "거부됨"
+msgstr "거부됨"
+
+#: templates/weekly_report.html:55
+msgid "멤버별 이슈 상태"
+msgstr "멤버별 이슈 상태"
+
+#: templates/weekly_report.html:65
+msgid "주간 작업 현황"
+msgstr "주간 작업 현황"
+
+#: templates/weekly_report.html:75
+msgid "프로젝트"
+msgstr "프로젝트"
+
+#: templates/weekly_report.html:85
+msgid "작업명"
+msgstr "작업명"
+
+#: templates/weekly_report.html:242
+msgid "이 주에 생성된 이슈가 없습니다."
+msgstr "이 주에 생성된 이슈가 없습니다."
+
+#: templates/weekly_report.html:252
+msgid "이 주에 할당된 이슈가 없습니다."
+msgstr "이 주에 할당된 이슈가 없습니다."
+
+#: templates/monthly_report.html:11
+msgid "이번 달 프로젝트 성과를 종합적으로 확인하세요"
+msgstr "이번 달 프로젝트 성과를 종합적으로 확인하세요"
+
+#: templates/monthly_report.html:26
+msgid "월간 선택"
+msgstr "월간 선택"
+
+#: templates/weekly_report.html:33
+msgid "주차"
+msgstr "주차" 

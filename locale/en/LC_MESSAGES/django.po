@@ -294,4 +294,84 @@ msgstr "Completed Issues"
 
 #: templates/performance.html:90
 msgid "지연된 이슈"
-msgstr "Delayed Issues" 
+msgstr "Delayed Issues"
+
+#: templates/performance.html:101
+msgid "팀원별 이슈 처리 현황"
+msgstr "Team Member Issue Processing Status"
+
+#: templates/performance.html:12
+msgid "팀원들의 이슈 처리 성과를 추적하고 관리하세요"
+msgstr "Track and manage team members' issue processing performance"
+
+#: templates/performance.html:105
+msgid "팀원"
+msgstr "Team Member"
+
+#: templates/performance.html:108
+msgid "진행중"
+msgstr "In Progress"
+
+#: templates/performance.html:109
+msgid "신규"
+msgstr "New"
+
+#: templates/performance.html:111
+msgid "완료율"
+msgstr "Completion Rate"
+
+#: templates/weekly_report.html:11
+msgid "이번 주 프로젝트 진행 상황을 확인하세요"
+msgstr "Check this week's project progress status"
+
+#: templates/weekly_report.html:15
+msgid "주간 선택"
+msgstr "Weekly Selection"
+
+#: templates/weekly_report.html:25
+msgid "총 작업"
+msgstr "Total Work"
+
+#: templates/weekly_report.html:35
+msgid "피드백"
+msgstr "Feedback"
+
+#: templates/weekly_report.html:45
+msgid "거부됨"
+msgstr "Rejected"
+
+#: templates/weekly_report.html:55
+msgid "멤버별 이슈 상태"
+msgstr "Member Issue Status"
+
+#: templates/weekly_report.html:65
+msgid "주간 작업 현황"
+msgstr "Weekly Work Status"
+
+#: templates/weekly_report.html:75
+msgid "프로젝트"
+msgstr "Project"
+
+#: templates/weekly_report.html:85
+msgid "작업명"
+msgstr "Work Name"
+
+#: templates/weekly_report.html:242
+msgid "이 주에 생성된 이슈가 없습니다."
+msgstr "No issues created this week."
+
+#: templates/weekly_report.html:252
+msgid "이 주에 할당된 이슈가 없습니다."
+msgstr "No issues assigned this week."
+
+#: templates/monthly_report.html:11
+msgid "이번 달 프로젝트 성과를 종합적으로 확인하세요"
+msgstr "Comprehensively check this month's project performance"
+
+#: templates/monthly_report.html:26
+msgid "월간 선택"
+msgstr "Monthly Selection"
+
+#: templates/weekly_report.html:33
+msgid "주차"
+msgstr "Week" 
